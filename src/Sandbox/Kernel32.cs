@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinApi.Core
+namespace Sandbox
 {
-    public class Class1
+    public static class Kernel32
     {
     }
 }

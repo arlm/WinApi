@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), EnlistmentInfo.props))\EnlistmentInfo.props" Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), EnlistmentInfo.props))' != '' " />
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|AnyCPU">
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|AnyCPU">
+      <Configuration>Release</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>806315df-9b7d-4e63-bdef-92d1a55dffde</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NuProjPath Condition=" '$(NuProjPath)' == '' ">$(MSBuildExtensionsPath)\NuProj\</NuProjPath>
+  </PropertyGroup>
+  <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
+  <PropertyGroup Label="Configuration">
+    <Id>WinApi.Console</Id>
+    <Version>0.1.0-alpha</Version>
+    <Title>WinApi.Console</Title>
+    <Authors>Alexandre Rocha Lima e Marcondes</Authors>
+    <Owners>arlm</Owners>
+    <Summary>WinApi.Console.NuGet</Summary>
+    <Description>WinApi.Console.NuGet</Description>
+    <ReleaseNotes>
+    </ReleaseNotes>
+    <ProjectUrl>https://github.com/arlm/WinApi</ProjectUrl>
+    <LicenseUrl>https://github.com/arlm/WinApi/blob/master/LICENSE.txt</LicenseUrl>
+    <Copyright>Copyright © Alexandre Rocha Lima e Marcondes</Copyright>
+    <Tags>winapi pinvoke.net console windows api win32</Tags>
+    <GenerateSymbolPackage />
+    <EmbedSourceFiles>true</EmbedSourceFiles>
+    <NoPackageAnalysis />
+    <NoDefaultExcludes />
+    <OutputPath>$(ProjectRoot)bin\$(Configuration)\Packages\</OutputPath>
+    <RequireLicenseAcceptance />
+    <DevelopmentDependency />
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="WinApi.Console.nuspec" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WinApi.Console\WinApi.Console.csproj" />
+  </ItemGroup>
+  <Import Project="$(NuProjPath)\NuProj.targets" />
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), EnlistmentInfo.targets))\EnlistmentInfo.targets" Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), EnlistmentInfo.targets))' != '' " />
+</Project>

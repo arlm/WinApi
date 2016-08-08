@@ -1,0 +1,21 @@
+﻿extensions: designer.cs generated.cs
+extensions: .cs .cpp .h
+// Copyright (c) to owners found in https://github.com/arlm/WinApi/blob/master/COPYRIGHT.md. All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+
+extensions: .aspx .ascx
+<%-- 
+Copyright (c) to owners found in https://github.com/arlm/WinApi/blob/master/COPYRIGHT.md. All rights reserved.
+Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+--%>
+
+extensions: .vb
+' Copyright (c) to owners found in https://github.com/arlm/WinApi/blob/master/COPYRIGHT.md. All rights reserved.
+' Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+
+extensions:  .xml .config .xsd
+<!--
+// Copyright (c) to owners found in https://github.com/arlm/WinApi/blob/master/COPYRIGHT.md. All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+-->
+
