@@ -322,7 +322,7 @@ namespace WinApi.Console
             var company = assembly.GetAttribute<AssemblyCompanyAttribute>();
             var name = assembly.GetAttribute<AssemblyTitleAttribute>();
 
-            System.Console.Title = $"{company.Company} | {name.Title}";
+            System.Console.Title = $"{company?.Company ?? "Console"} | {name?.Title ?? "Application"}";
         }
 
         public static void StartMarquee(bool showProgress = true)
