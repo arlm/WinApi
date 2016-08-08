@@ -318,7 +318,7 @@ namespace WinApi.Console
 
         public static void SetTitle()
         {
-            var assembly = Assembly.GetExecutingAssembly();
+            var assembly = Assembly.GetCallingAssembly();
             var company = assembly.GetAttribute<AssemblyCompanyAttribute>();
             var name = assembly.GetAttribute<AssemblyTitleAttribute>();
 
