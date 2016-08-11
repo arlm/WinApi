@@ -7,8 +7,6 @@ namespace WinApi.Core
 {
     public static class CoreExtensions
     {
-        #region Public Methods
-
         public static ushort GetHiWord(IntPtr dwValue)
         {
             return (ushort)((((long)dwValue) >> 0x10) & 0xffff);
@@ -38,7 +36,5 @@ namespace WinApi.Core
         {
             return (IntPtr)((loWord & 0xffff) | ((hiWord & 0xffff) << 0x10));
         }
-
-        #endregion Public Methods
     }
 }

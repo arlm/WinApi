@@ -5,12 +5,12 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("WinApi.Core")]
+[assembly: AssemblyTitle("WinApi.Core.Tests")]
+[assembly: AssemblyProduct("WinApi.Core.Tests")]
+[assembly: AssemblyCopyright("Copyright © 2016 Alexandre Rocha Lima e Marcondes")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Alexandre Rocha Lima e Marcondes")]
-[assembly: AssemblyProduct("WinApi")]
-[assembly: AssemblyCopyright("Copyright © 2016 Alexandre Rocha Lima e Marcondes")]
 [assembly: AssemblyTrademark("Alexandre Rocha Lima e Marcondes")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
