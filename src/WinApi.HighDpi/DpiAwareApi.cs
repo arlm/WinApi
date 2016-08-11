@@ -5,7 +5,6 @@ using System;
 using System.Linq;
 using Microsoft.Win32;
 using PInvoke;
-using Windows.Core.Extensions;
 
 namespace WinApi.HighDpi
 {

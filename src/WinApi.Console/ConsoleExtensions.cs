@@ -9,18 +9,14 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
-using CLR.Extensions;
-using ExceptionHandling.Extensions;
 using Microsoft.Win32;
-using Windows.Core.Extensions;
+
 using ThreadState = System.Threading.ThreadState;
 
 namespace WinApi.Console
 {
     public static class ConsoleExtensions
     {
-        #region Private Fields
-
         /// _CALL_REPORTFAULT -> 0x2
         private const int _CALL_REPORTFAULT = 2;
 
@@ -78,10 +74,6 @@ namespace WinApi.Console
 
         private static int spinnerPos = 0;
 
-        #endregion Private Fields
-
-        #region Public Constructors
-
         static ConsoleExtensions()
         {
             AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
@@ -104,10 +96,6 @@ namespace WinApi.Console
             SystemEvents.SessionEnding += SystemEvents_SessionEnding;
             SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
         }
-
-        #endregion Public Constructors
-
-        #region Private Delegates
 
         /// Return Type: int
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -210,19 +198,11 @@ namespace WinApi.Console
         /// Return Type: void
         private delegate void unexpected_function();
 
-        #endregion Private Delegates
-
-        #region Public Events
-
         public static event EventHandler<ConsoleCancelEventArgs> OnCancelKeyPressExit;
 
         public static event EventHandler<EventArgs> OnProcessExit;
 
         public static event EventHandler<UnhandledExceptionEventArgs> OnUnhandledException;
-
-        #endregion Public Events
-
-        #region Public Properties
 
         public static bool CaptureFirstChanceException
         {
@@ -312,9 +292,12 @@ namespace WinApi.Console
             }
         }
 
-        #endregion Public Properties
-
-        #region Public Methods
+        /// Return Type: BOOL->int
+        ///dwCtrlEvent: DWORD->unsigned int
+        ///dwProcessGroupId: DWORD->unsigned int
+        [DllImport("kernel32.dll", EntryPoint = "GenerateConsoleCtrlEvent")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GenerateConsoleCtrlEvent(uint dwCtrlEvent, uint dwProcessGroupId);
 
         public static void SetTitle()
         {
@@ -375,10 +358,6 @@ namespace WinApi.Console
                 }
             }
         }
-
-        #endregion Public Methods
-
-        #region Private Methods
 
         /// Return Type: terminate_function
         [DllImport("msvcr80.dll", EntryPoint = "_get_terminate")]
@@ -678,13 +657,6 @@ namespace WinApi.Console
         [DllImport("kernel32.dll", EntryPoint = "FreeConsole")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool FreeConsole();
-
-        /// Return Type: BOOL->int
-        ///dwCtrlEvent: DWORD->unsigned int
-        ///dwProcessGroupId: DWORD->unsigned int
-        [DllImport("kernel32.dll", EntryPoint = "GenerateConsoleCtrlEvent")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GenerateConsoleCtrlEvent(uint dwCtrlEvent, uint dwProcessGroupId);
 
         /// Return Type: DWORD->unsigned int
         ///AliasBuffer: LPWSTR->WCHAR*
@@ -1119,10 +1091,6 @@ namespace WinApi.Console
         [DllImport("kernel32.dll", EntryPoint = "WTSGetActiveConsoleSessionId")]
         private static extern uint WTSGetActiveConsoleSessionId();
 
-        #endregion Private Methods
-
-        #region Private Structs
-
         [StructLayout(LayoutKind.Sequential)]
         private struct CHAR_INFO
         {
@@ -1321,7 +1289,5 @@ namespace WinApi.Console
             /// COORD->_COORD
             public COORD dwSize;
         }
-
-        #endregion Private Structs
     }
 }
