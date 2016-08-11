@@ -2,90 +2,202 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Windows.Forms;
 using PInvoke;
-using WinApi.Core;
 
 namespace Sandbox
 {
     public class User32
     {
-        #region Public Fields
-
         // size of a device name string
         public const int CCHDEVICENAME = 32;
 
+        public const int CW_USEDEFAULT = unchecked((int)0x80000000);
         public const int LF_FACESIZE = 32;
 
-        public const int CW_USEDEFAULT = unchecked((int)0x80000000);
+        [DllImport("user32.dll")]
+        public static extern IntPtr BeginPaint(IntPtr hwnd, out PAINTSTRUCT lpPaint);
 
-        #endregion Public Fields
+        [DllImport("user32.dll")]
+        public static extern IntPtr ChildWindowFromPoint(IntPtr hWndParent, POINT Point);
 
-        #region Public Methods
+        [DllImport("user32.dll")]
+        public static extern IntPtr ChildWindowFromPointEx(IntPtr hWndParent, POINT pt, WindowFromPointFlags uFlags);
 
-        public static bool IsScreenInLandscapeOrientation()
-        {
-            int theScreenRectHeight = Screen.PrimaryScreen.Bounds.Height;
-            int theScreenRectWidth = Screen.PrimaryScreen.Bounds.Width;
+        [DllImport("user32.dll")]
+        public static extern bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
 
-            // Compare height and width of screen and act accordingly.
-            return theScreenRectHeight < theScreenRectWidth;
-        }
+        /// <summary>
+        /// The CreateWindowEx function creates an overlapped, pop-up, or child window with an
+        /// extended window style; otherwise, this function is identical to the CreateWindow function.
+        /// </summary>
+        /// <param name="dwExStyle">Specifies the extended window style of the window being created.</param>
+        /// <param name="lpClassName">
+        /// Pointer to a null-terminated string or a class atom created by a previous call to the
+        /// RegisterClass or RegisterClassEx function. The atom must be in the low-order word of
+        /// lpClassName; the high-order word must be zero. If lpClassName is a string, it specifies
+        /// the window class name. The class name can be any name registered with RegisterClass or
+        /// RegisterClassEx, provided that the module that registers the class is also the module
+        /// that creates the window. The class name can also be any of the predefined system class names.
+        /// </param>
+        /// <param name="lpWindowName">
+        /// Pointer to a null-terminated string that specifies the window name. If the window style
+        /// specifies a title bar, the window title pointed to by lpWindowName is displayed in the
+        /// title bar. When using CreateWindow to create controls, such as buttons, check boxes, and
+        /// static controls, use lpWindowName to specify the text of the control. When creating a
+        /// static control with the SS_ICON style, use lpWindowName to specify the icon name or
+        /// identifier. To specify an identifier, use the syntax "#num".
+        /// </param>
+        /// <param name="dwStyle">
+        /// Specifies the style of the window being created. This parameter can be a combination of
+        /// window styles, plus the control styles indicated in the Remarks section.
+        /// </param>
+        /// <param name="x">
+        /// Specifies the initial horizontal position of the window. For an overlapped or pop-up
+        /// window, the x parameter is the initial x-coordinate of the window's upper-left corner, in
+        /// screen coordinates. For a child window, x is the x-coordinate of the upper-left corner of
+        /// the window relative to the upper-left corner of the parent window's client area. If x is
+        /// set to CW_USEDEFAULT, the system selects the default position for the window's upper-left
+        /// corner and ignores the y parameter. CW_USEDEFAULT is valid only for overlapped windows;
+        /// if it is specified for a pop-up or child window, the x and y parameters are set to zero.
+        /// </param>
+        /// <param name="y">
+        /// Specifies the initial vertical position of the window. For an overlapped or pop-up
+        /// window, the y parameter is the initial y-coordinate of the window's upper-left corner, in
+        /// screen coordinates. For a child window, y is the initial y-coordinate of the upper-left
+        /// corner of the child window relative to the upper-left corner of the parent window's
+        /// client area. For a list box y is the initial y-coordinate of the upper-left corner of the
+        /// list box's client area relative to the upper-left corner of the parent window's client area.
+        /// <para>
+        /// If an overlapped window is created with the WS_VISIBLE style bit set and the x parameter
+        /// is set to CW_USEDEFAULT, then the y parameter determines how the window is shown. If the
+        /// y parameter is CW_USEDEFAULT, then the window manager calls ShowWindow with the SW_SHOW
+        /// flag after the window has been created. If the y parameter is some other value, then the
+        /// window manager calls ShowWindow with that value as the nCmdShow parameter.
+        /// </para>
+        /// </param>
+        /// <param name="nWidth">
+        /// Specifies the width, in device units, of the window. For overlapped windows, nWidth is
+        /// the window's width, in screen coordinates, or CW_USEDEFAULT. If nWidth is CW_USEDEFAULT,
+        /// the system selects a default width and height for the window; the default width extends
+        /// from the initial x-coordinates to the right edge of the screen; the default height
+        /// extends from the initial y-coordinate to the top of the icon area. CW_USEDEFAULT is valid
+        /// only for overlapped windows; if CW_USEDEFAULT is specified for a pop-up or child window,
+        /// the nWidth and nHeight parameter are set to zero.
+        /// </param>
+        /// <param name="nHeight">
+        /// Specifies the height, in device units, of the window. For overlapped windows, nHeight is
+        /// the window's height, in screen coordinates. If the nWidth parameter is set to
+        /// CW_USEDEFAULT, the system ignores nHeight.
+        /// </param>
+        /// <param name="hWndParent">
+        /// Handle to the parent or owner window of the window being created. To create a child
+        /// window or an owned window, supply a valid window handle. This parameter is optional for
+        /// pop-up windows.
+        /// <para>
+        /// Windows 2000/XP: To create a message-only window, supply HWND_MESSAGE or a handle to an
+        /// existing message-only window.
+        /// </para>
+        /// </param>
+        /// <param name="hMenu">
+        /// Handle to a menu, or specifies a child-window identifier, depending on the window style.
+        /// For an overlapped or pop-up window, hMenu identifies the menu to be used with the window;
+        /// it can be NULL if the class menu is to be used. For a child window, hMenu specifies the
+        /// child-window identifier, an integer value used by a dialog box control to notify its
+        /// parent about events. The application determines the child-window identifier; it must be
+        /// unique for all child windows with the same parent window.
+        /// </param>
+        /// <param name="hInstance">
+        /// Handle to the instance of the module to be associated with the window.
+        /// </param>
+        /// <param name="lpParam">
+        /// Pointer to a value to be passed to the window through the CREATESTRUCT structure
+        /// (lpCreateParams member) pointed to by the lParam param of the WM_CREATE message. This
+        /// message is sent to the created window by this function before it returns.
+        /// <para>
+        /// If an application calls CreateWindow to create a MDI client window, lpParam should point
+        /// to a CLIENTCREATESTRUCT structure. If an MDI client window calls CreateWindow to create
+        /// an MDI child window, lpParam should point to a MDICREATESTRUCT structure. lpParam may be
+        /// NULL if no additional data is needed.
+        /// </para>
+        /// </param>
+        /// <returns>
+        /// If the function succeeds, the return value is a handle to the new window.
+        /// <para>
+        /// If the function fails, the return value is NULL. To get extended error information, call GetLastError.
+        /// </para>
+        /// <para>This function typically fails for one of the following reasons:</para>
+        /// <list type="">
+        /// <item>an invalid parameter value</item>
+        /// <item>the system class was registered by a different module</item>
+        /// <item>The WH_CBT hook is installed and returns a failure code</item>
+        /// <item>
+        /// if one of the controls in the dialog template is not registered, or its window window
+        /// procedure fails WM_CREATE or WM_NCCREATE
+        /// </item>
+        /// </list>
+        /// </returns>
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern IntPtr CreateWindowEx(
+           WindowStylesEx dwExStyle,
+           string lpClassName,
+           string lpWindowName,
+           WindowStyles dwStyle,
+           int x,
+           int y,
+           int nWidth,
+           int nHeight,
+           IntPtr hWndParent,
+           IntPtr hMenu,
+           IntPtr hInstance,
+           IntPtr lpParam);
 
-        public static bool IsScreenInPortraitOrientation()
-        {
-            int theScreenRectHeight = Screen.PrimaryScreen.Bounds.Height;
-            int theScreenRectWidth = Screen.PrimaryScreen.Bounds.Width;
+        // When you call this function, the WndProc function must respond to the WM_NCCREATE message
+        // by returning TRUE. If it does not, the creation process will fail. A null handle will be
+        // returned from CreateWindowEx and GetLastError will return 0. See MSDN on WM_NCCREATE
+        // (http://msdn.microsoft.com/en-us/library/ms632635.aspx) and also WM_CREATE
+        // (http://msdn.microsoft.com/en-us/library/ms632619.aspx). You can have your WndProc call
+        // DefWindowProc, which will take care of this issue. Tips & Tricks: This method should have
+        // at least two versions: one where lpClassName is string, and other in which is IntPtr. I
+        // sometimes get error 1407 ("Cannot find window class.") when trying to create the
+        // window(after a successful call to RegisterClass) Solution is to pass in the second version
+        // the class as new IntPtr((int)(uint)regResult), where regResult is the result from RegisterClass
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern IntPtr CreateWindowEx(
+                   int dwExStyle,
+                   string lpClassName,
+                   string lpWindowName,
+                   WindowStyles dwStyle,
+                   int x,
+                   int y,
+                   int nWidth,
+                   int nHeight,
+                   IntPtr hWndParent,
+                   IntPtr hMenu,
+                   IntPtr hInstance,
+                   IntPtr lpParam);
 
-            // Compare height and width of screen and act accordingly.
-            return theScreenRectHeight > theScreenRectWidth;
-        }
+        [DllImport("user32.dll")]
+        public static extern IntPtr DefWindowProc(IntPtr hWnd, PInvoke.User32.WindowMessage uMsg, IntPtr wParam, IntPtr lParam);
 
-        public Screen DetectScreen(IntPtr windowHandle)
-        {
-            // Figure out which screen the window is located on (in a multi screen setup)
-            var appWindowBounds = GetWindowRectangle(windowHandle).ToRectangle();
-            foreach (var screen in Screen.AllScreens)
-            {
-                // If the app is not fullscreen then the screen.bounds will contain the window if the
-                // app is fullscreen then IT will actually contain the screen bounds
-                if (screen.Bounds.Contains(appWindowBounds) ||
-                    appWindowBounds.Contains(screen.Bounds))
-                {
-                    return screen;
-                }
-            }
+        [DllImport("user32.dll")]
+        public static extern IntPtr DispatchMessage(ref MSG lpmsg);
 
-            // By default use the primary screen
-            return Screen.PrimaryScreen;
-        }
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern int DrawText(IntPtr hDC, string lpString, int nCount, ref RECT lpRect, TextFormats uFormat);
 
-        public void EnterFullScreenMode(Form targetForm)
-        {
-            targetForm.WindowState = FormWindowState.Normal;
-            targetForm.FormBorderStyle = FormBorderStyle.None;
-            targetForm.WindowState = FormWindowState.Maximized;
-            targetForm.Bounds = Screen.PrimaryScreen.Bounds;
-        }
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern int DrawTextEx(IntPtr hdc, StringBuilder lpchText, int cchText, ref RECT lprc, uint dwDTFormat, ref DRAWTEXTPARAMS lpDTParams);
 
-        public void LeaveFullScreenMode(Form targetForm)
-        {
-            targetForm.FormBorderStyle = FormBorderStyle.Sizable;
-            targetForm.WindowState = FormWindowState.Normal;
-        }
+        [DllImport("user32.dll")]
+        public static extern bool EndPaint(IntPtr hWnd, ref PAINTSTRUCT lpPaint);
 
-        public static bool IsForegroundWindowFullScreen()
-        {
-            IntPtr hWnd;
+        [DllImport("user32.dll")]
+        public static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, MonitorEnumDelegate lpfnEnum, IntPtr dwData);
 
-            hWnd = PInvoke.User32.GetForegroundWindow();
-
-            return IsFullScreenWindow(hWnd);
-        }
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern bool GetClassInfoEx(IntPtr hInstance, string lpClassName, ref WNDCLASSEX lpWndClass);
 
         [DllImport("user32.dll")]
         public static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
@@ -93,115 +205,39 @@ namespace Sandbox
         [DllImport("user32.dll")]
         public static extern bool GetCursorPos(out POINT lpPoint);
 
-        public static bool GetExtendedFrameBounds(IntPtr handle, out RECT rectangle)
-        {
-            var result = DwmApi.DwmGetWindowAttribute(handle, DWMWINDOWATTRIBUTE.ExtendedFrameBounds, out rectangle, Marshal.SizeOf(typeof(RECT)));
-
-            return result >= 0;
-        }
-
-        public static RECT GetWindowRect(IntPtr handle)
-        {
-            RECT rect;
-            PInvoke.User32.GetWindowRect(handle, out rect);
-            return rect;
-        }
-
-        //          if (!for_metro)
-        //          {
-        //              // On restore, resize to the previous saved rect size.
-        //              gfx::Rect new_rect(saved_window_info_.window_rect);
-        //              SetWindowPos(hwnd_, NULL, new_rect.x(), new_rect.y(),
-        //                           new_rect.width(), new_rect.height(),
-        //                           SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-        //          }
-        //          if (saved_window_info_.maximized)
-        //::SendMessage(hwnd_, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
-        //      }
-        //  }
-        public static RECT GetWindowRectangle(IntPtr handle)
-        {
-            if (Environment.OSVersion.Version.Major < 6)
-            {
-                return GetWindowRect(handle);
-            }
-            else
-            {
-                RECT rectangle;
-                return GetExtendedFrameBounds(handle, out rectangle) ? rectangle : GetWindowRect(handle);
-            }
-        }
-
-        public static string GetWindowTextRaw(IntPtr hwnd)
-        {
-            // Allocate correct string length first
-            int length = PInvoke.User32.SendMessage(hwnd, PInvoke.User32.WindowMessage.WM_GETTEXTLENGTH, IntPtr.Zero, IntPtr.Zero).ToInt32();
-
-            return SendMessageWmGetText(hwnd, length);
-        }
-
-        public static unsafe string SendMessageWmGetText(IntPtr hwnd, int length = 256) // Any good enought value
-        {
-            if (length == 0)
-            {
-                return string.Empty;
-            }
-
-            char* windowText = stackalloc char[length + 1];
-            int capacity = length + 1;
-
-            var result = PInvoke.User32.SendMessage(hwnd, PInvoke.User32.WindowMessage.WM_GETTEXT, &capacity, windowText);
-
-            if (result == IntPtr.Zero)
-            {
-                return string.Empty;
-            }
-            else
-            {
-                return new string(windowText, 0, result.ToInt32());
-            }
-        }
-
-        //MSDN recommends using PostQuitMessage over PostMessage when you want to send WM_QUIT http://msdn.microsoft.com/en-us/library/ms632641%28v=vs.85%29.aspx
         [DllImport("user32.dll")]
-        public static extern void PostQuitMessage(int nExitCode);
+        public static extern IntPtr GetDC(IntPtr hWnd);
 
-        // Use this code within a class to show a topmost form without giving focus to it.
-        public static void ShowInactiveTopmost(IntPtr hwnd)
-        {
-            var rect = GetWindowRectangle(hwnd);
-            PInvoke.User32.ShowWindow(hwnd, PInvoke.User32.WindowShowStyle.SW_SHOWNOACTIVATE);
-            PInvoke.User32.SetWindowPos(
-                hwnd,
-                new IntPtr((int)SpecialWindowHandles.HWND_TOPMOST),
-                rect.left,
-                rect.top,
-                rect.bottom - rect.top,
-                rect.right - rect.left,
-                PInvoke.User32.SetWindowPosFlags.SWP_NOACTIVATE);
-        }
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetDCEx(IntPtr hWnd, IntPtr hrgnClip, DeviceContextValues flags);
 
-        // you use Windows Presentation Foundation you'll need WindowInteropHelper to get Window
-        // handle. Make sure you referenced PresentationFramework assembly. Insert this into Using
-        // block using System.Windows.Interop; Create instance of WindowInteropHelper
-        // WindowInteropHelper winHelp = new WindowInteropHelper(target); Then use winHelp.Handle
-        // insted of GetActiveWindowHandle(). To bad that this cannot be resized out of the fixed
-        // screen resolution size.
-        public static void MoveWindowToMonitor(int monitor, IntPtr hwnd)
-        {
-            var windowRec = GetWindowRect(hwnd);
+        /// <summary>
+        /// Retrieves a handle to the foreground window (the window with which the user is currently
+        /// working). The system assigns a slightly higher priority to the thread that creates the
+        /// foreground window than it does to other threads.
+        /// <para>
+        /// See https://msdn.microsoft.com/en-us/library/windows/desktop/ms633505%28v=vs.85%29.aspx
+        /// for more information.
+        /// </para>
+        /// </summary>
+        /// <returns>
+        /// C++ ( Type: Type: HWND ) <br/> The return value is a handle to the foreground window. The
+        /// foreground window can be NULL in certain circumstances, such as when a window is losing activation.
+        /// </returns>
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
 
-            // When I move a window to a different monitor it subtracts 16 from the Width and 38 from
-            // the Height, Not sure if this is on my system or others.
-            PInvoke.User32.SetWindowPos(
-                hwnd,
-                (IntPtr)SpecialWindowHandles.HWND_TOP,
-                Screen.AllScreens[monitor].WorkingArea.Left,
-                Screen.AllScreens[monitor].WorkingArea.Top,
-                (windowRec.right - windowRec.left) + 16,
-                (windowRec.bottom - windowRec.top) + 38,
-                PInvoke.User32.SetWindowPosFlags.SWP_SHOWWINDOW);
-        }
+        [DllImport("user32.dll")]
+        public static extern int GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+
+        [DllImport("user32.dll")]
+        public static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFOEX lpmi);
+
+        [DllImport("user32")]
+        public static extern bool GetMonitorInfo(IntPtr hMonitor, MONITORINFO lpmi);
 
         /// <summary>
         /// Retrieves a handle to the Shell's desktop window.
@@ -217,48 +253,174 @@ namespace Sandbox
         [DllImport("user32.dll")]
         public static extern IntPtr GetShellWindow();
 
-        public static bool IsFullScreenWindow(IntPtr hWnd)
-        {
-            var desktopHandle = PInvoke.User32.GetDesktopWindow();
-            var shellHandle = GetShellWindow();
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern int GetSystemMetrics(SystemMetric smIndex);
 
-            bool runningFullScreen = false;
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr GetWindowDC(IntPtr hWnd);
 
-            if (hWnd != null && !hWnd.Equals(IntPtr.Zero))
-            {
-                if (!(hWnd.Equals(desktopHandle) || hWnd.Equals(shellHandle)))
-                {
-                    RECT appBounds = GetWindowRectangle(hWnd);
+        [DllImport("User32.dll", SetLastError = true)]
+        public static extern bool GetWindowDisplayAffinity(IntPtr hWnd, out int dwAffinity);
 
-                    var screenBounds = Screen.FromHandle(hWnd).Bounds;
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool GetWindowInfo(IntPtr hwnd, ref WINDOWINFO pwi);
 
-                    if (appBounds.ToRectangle() == screenBounds)
-                    {
-                        runningFullScreen = true;
-                    }
-                }
-            }
+        /// <summary>
+        /// Retrieves the show state and the restored, minimized, and maximized positions of the
+        /// specified window.
+        /// </summary>
+        /// <param name="hWnd">A handle to the window.</param>
+        /// <param name="lpwndpl">
+        /// A pointer to the WINDOWPLACEMENT structure that receives the show state and position information.
+        /// <para>
+        /// Before calling GetWindowPlacement, set the length member to sizeof(WINDOWPLACEMENT).
+        /// GetWindowPlacement fails if lpwndpl-&gt; length is not set correctly.
+        /// </para>
+        /// </param>
+        /// <returns>
+        /// If the function succeeds, the return value is nonzero.
+        /// <para>
+        /// If the function fails, the return value is zero. To get extended error information, call GetLastError.
+        /// </para>
+        /// </returns>
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
 
-            return runningFullScreen;
-        }
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetWindowRect(IntPtr hWnd, ref RECT rect);
 
-        public static IntPtr WindowFromPhysicalPoint(int physicalX, int physicalY)
-        {
-            var ps = new POINT
-            {
-                x = physicalX,
-                y = physicalY
-            };
+        [DllImport("user32.dll")]
+        public static extern bool IsChild(IntPtr hWndParent, IntPtr hWnd);
 
-            if (Environment.OSVersion.Version.Major >= 6)
-            {
-                return WindowFromPhysicalPoint(ps);
-            }
-            else
-            {
-                return WindowFromPoint(ps);
-            }
-        }
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsGUIThread([MarshalAs(UnmanagedType.Bool)] bool bConvert);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsHungAppWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsIconic(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern bool IsWindowUnicode(IntPtr hWnd);
+
+        /// <summary>
+        /// Determines the visibility state of the specified window.
+        /// <para>
+        /// Go to https://msdn.microsoft.com/en-us/library/windows/desktop/ms633530%28v=vs.85%29.aspx
+        /// for more information. For WS_VISIBLE information go to https://msdn.microsoft.com/en-us/library/windows/desktop/ms632600%28v=vs.85%29.aspx
+        /// </para>
+        /// </summary>
+        /// <param name="hWnd">
+        /// C++ ( hWnd Type: HWND ) <br/> A handle to the window to be tested.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> or the return value is nonzero if the specified window, its parent window,
+        /// its parent's parent window, and so forth, have the WS_VISIBLE style; otherwise,
+        /// <c>false</c> or the return value is zero.
+        /// </returns>
+        /// <remarks>
+        /// The visibility state of a window is indicated by the WS_VISIBLE[0x10000000L] style bit.
+        /// When WS_VISIBLE[0x10000000L] is set, the window is displayed and subsequent drawing into
+        /// it is displayed as long as the window has the WS_VISIBLE[0x10000000L] style. Any drawing
+        /// to a window with the WS_VISIBLE[0x10000000L] style will not be displayed if the window is
+        /// obscured by other windows or is clipped by its parent window.
+        /// </remarks>
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsWindowVisible(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern bool IsZoomed(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr LoadCursor(IntPtr hInstance, IntPtr lpCursorName);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern IntPtr LoadIcon(IntPtr hInstance, string lpIconName);
+
+        //For loading icon-resource identified as integer ID
+        [DllImport("user32.dll")]
+        public static extern IntPtr LoadIcon(IntPtr hInstance, IntPtr lpIconName);
+
+        [DllImport("user32", SetLastError = true)]
+        public static extern int MapWindowPoints(IntPtr hWndFrom, IntPtr hWndTo, ref RECT rect, [MarshalAs(UnmanagedType.U4)] int cPoints);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern MessageBoxResult MessageBox(IntPtr hWnd, string text, string caption, MessageBoxOptions options);
+
+        //http://www.codeproject.com/Articles/8460/Advanced-MessageBoxing-with-the-C-MessageBoxIndire
+        [DllImport("user32.dll")]
+        public static extern int MessageBoxIndirect(ref MSGBOXPARAMS lpMsgBoxParams);
+
+        //#if(WINVER >= 0x0600)
+        //OSVERSIONINFO osvi;
+        //memset(&osvi,0,sizeof(osvi));
+        //osvi.dwOSVersionInfoSize = sizeof(osvi);
+        //GetVersionEx(&osvi);
+        //if (osvi.dwMajorVersion < 6)
+        //ncm.cbSize -= sizeof(ncm.iPaddedBorderWidth);
+        //#endif
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr MonitorFromPoint(POINT pt, MonitorOptions dwFlags);
+
+        [DllImport("User32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr MonitorFromPoint(POINT point, int flags);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr MonitorFromRect(ref RECT lprc, MonitorOptions dwFlags);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr MonitorFromWindow(IntPtr hwnd, MonitorOptions dwFlags);
+
+        //MSDN recommends using PostQuitMessage over PostMessage when you want to send WM_QUIT http://msdn.microsoft.com/en-us/library/ms632641%28v=vs.85%29.aspx
+        [DllImport("user32.dll")]
+        public static extern void PostQuitMessage(int nExitCode);
+
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool PostThreadMessage(uint threadId, PInvoke.User32.WindowMessage msg, UIntPtr wParam, IntPtr lParam);
+
+        /// Return Type: LONG->int
+        ///Flags: UINT32->unsigned int
+        ///pNumPathArrayElements: UINT32*
+        ///pPathInfoArray: DISPLAYCONFIG_PATH_INFO*
+        ///pNumModeInfoArrayElements: UINT32*
+        ///pModeInfoArray: DISPLAYCONFIG_MODE_INFO*
+        ///pCurrentTopologyId: DISPLAYCONFIG_TOPOLOGY_ID*
+        [DllImport("user32.dll")]
+        public static extern int QueryDisplayConfig(uint Flags, ref uint pNumPathArrayElements, ref DISPLAYCONFIG_PATH_INFO pPathInfoArray, ref uint pNumModeInfoArrayElements, ref DISPLAYCONFIG_MODE_INFO pModeInfoArray, ref DISPLAYCONFIG_TOPOLOGY_ID pCurrentTopologyId);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr RealChildWindowFromPoint(IntPtr hwndParent, POINT ptParentClientCoords);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern uint RealGetWindowClass(IntPtr hwnd, [Out] StringBuilder pszType, uint cchType);
+
+        [DllImport("user32.dll")]
+        public static extern ushort RegisterClass(ref WNDCLASS lpWndClass);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.U2)]
+        public static extern short RegisterClassEx(ref WNDCLASSEX lpwcx);
+
+        [DllImport("user32.dll")]
+        public static extern bool ReleaseDC(IntPtr hWnd, IntPtr hDC);
+
+        [DllImport("user32.dll")]
+        public static extern bool ScreenToClient(IntPtr hWnd, ref POINT lpPoint);
+
+        [DllImport("User32.dll", SetLastError = true)]
+        public static extern bool SetWindowDisplayAffinity(IntPtr hWnd, int dwAffinity);
 
         /// <summary>
         /// Changes the size, position, and Z order of a child, pop-up, or top-level window. These
@@ -520,184 +682,15 @@ namespace Sandbox
         [DllImport("user32.dll")]
         public static extern bool ShowWindow(IntPtr hWnd, PInvoke.User32.WindowShowStyle nCmdShow);
 
-        [DllImport("user32", SetLastError = true)]
-        public static extern int MapWindowPoints(IntPtr hWndFrom, IntPtr hWndTo, ref RECT rect, [MarshalAs(UnmanagedType.U4)] int cPoints);
-
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        public static extern MessageBoxResult MessageBox(IntPtr hWnd, string text, string caption, MessageBoxOptions options);
+        [DllImport("user32.dll")]
+        public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr GetWindowDC(IntPtr hWnd);
-
-        [DllImport("User32.dll", SetLastError = true)]
-        public static extern bool GetWindowDisplayAffinity(IntPtr hWnd, out int dwAffinity);
-
         [return: MarshalAs(UnmanagedType.Bool)]
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool GetWindowInfo(IntPtr hwnd, ref WINDOWINFO pwi);
-
-        /// <summary>
-        /// Retrieves the show state and the restored, minimized, and maximized positions of the
-        /// specified window.
-        /// </summary>
-        /// <param name="hWnd">A handle to the window.</param>
-        /// <param name="lpwndpl">
-        /// A pointer to the WINDOWPLACEMENT structure that receives the show state and position information.
-        /// <para>
-        /// Before calling GetWindowPlacement, set the length member to sizeof(WINDOWPLACEMENT).
-        /// GetWindowPlacement fails if lpwndpl-&gt; length is not set correctly.
-        /// </para>
-        /// </param>
-        /// <returns>
-        /// If the function succeeds, the return value is nonzero.
-        /// <para>
-        /// If the function fails, the return value is zero. To get extended error information, call GetLastError.
-        /// </para>
-        /// </returns>
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
-
-        /// <summary>
-        /// Determines the visibility state of the specified window.
-        /// <para>
-        /// Go to https://msdn.microsoft.com/en-us/library/windows/desktop/ms633530%28v=vs.85%29.aspx
-        /// for more information. For WS_VISIBLE information go to https://msdn.microsoft.com/en-us/library/windows/desktop/ms632600%28v=vs.85%29.aspx
-        /// </para>
-        /// </summary>
-        /// <param name="hWnd">
-        /// C++ ( hWnd Type: HWND ) <br/> A handle to the window to be tested.
-        /// </param>
-        /// <returns>
-        /// <c>true</c> or the return value is nonzero if the specified window, its parent window,
-        /// its parent's parent window, and so forth, have the WS_VISIBLE style; otherwise,
-        /// <c>false</c> or the return value is zero.
-        /// </returns>
-        /// <remarks>
-        /// The visibility state of a window is indicated by the WS_VISIBLE[0x10000000L] style bit.
-        /// When WS_VISIBLE[0x10000000L] is set, the window is displayed and subsequent drawing into
-        /// it is displayed as long as the window has the WS_VISIBLE[0x10000000L] style. Any drawing
-        /// to a window with the WS_VISIBLE[0x10000000L] style will not be displayed if the window is
-        /// obscured by other windows or is clipped by its parent window.
-        /// </remarks>
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool IsWindowVisible(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetDC(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetDCEx(IntPtr hWnd, IntPtr hrgnClip, DeviceContextValues flags);
-
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        public static extern int DrawText(IntPtr hDC, string lpString, int nCount, ref RECT lpRect, TextFormats uFormat);
-
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        public static extern int DrawTextEx(IntPtr hdc, StringBuilder lpchText, int cchText, ref RECT lprc, uint dwDTFormat, ref DRAWTEXTPARAMS lpDTParams);    
-
-        [DllImport("user32.dll")]
-        public static extern bool IsZoomed(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr LoadCursor(IntPtr hInstance, IntPtr lpCursorName);
-
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        public static extern IntPtr LoadIcon(IntPtr hInstance, string lpIconName);
-
-        //For loading icon-resource identified as integer ID
-        [DllImport("user32.dll")]
-        public static extern IntPtr LoadIcon(IntPtr hInstance, IntPtr lpIconName);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetWindowRect(IntPtr hWnd, ref RECT rect);
-
-        [DllImport("user32.dll")]
-        public static extern bool IsChild(IntPtr hWndParent, IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool IsGUIThread([MarshalAs(UnmanagedType.Bool)] bool bConvert);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool IsHungAppWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool IsIconic(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool IsWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        public static extern bool IsWindowUnicode(IntPtr hWnd);
-
-        //http://www.codeproject.com/Articles/8460/Advanced-MessageBoxing-with-the-C-MessageBoxIndire
-        [DllImport("user32.dll")]
-        public static extern int MessageBoxIndirect(ref MSGBOXPARAMS lpMsgBoxParams);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr ChildWindowFromPoint(IntPtr hWndParent, POINT Point);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr ChildWindowFromPointEx(IntPtr hWndParent, POINT pt, WindowFromPointFlags uFlags);
-
-        [DllImport("user32.dll")]
-        public static extern bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
-
-        [return: MarshalAs(UnmanagedType.Bool)]
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool PostThreadMessage(uint threadId, PInvoke.User32.WindowMessage msg, UIntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        public static extern bool ReleaseDC(IntPtr hWnd, IntPtr hDC);
-
-        /// Return Type: LONG->int
-        ///Flags: UINT32->unsigned int
-        ///pNumPathArrayElements: UINT32*
-        ///pPathInfoArray: DISPLAYCONFIG_PATH_INFO*
-        ///pNumModeInfoArrayElements: UINT32*
-        ///pModeInfoArray: DISPLAYCONFIG_MODE_INFO*
-        ///pCurrentTopologyId: DISPLAYCONFIG_TOPOLOGY_ID*
-        [DllImport("user32.dll")]
-        public static extern int QueryDisplayConfig(uint Flags, ref uint pNumPathArrayElements, ref DISPLAYCONFIG_PATH_INFO pPathInfoArray, ref uint pNumModeInfoArrayElements, ref DISPLAYCONFIG_MODE_INFO pModeInfoArray, ref DISPLAYCONFIG_TOPOLOGY_ID pCurrentTopologyId);
-
-
-        [DllImport("user32.dll")]
-        public static extern bool ScreenToClient(IntPtr hWnd, ref POINT lpPoint);
+        public static extern bool SystemParametersInfo(SPI uiAction, uint uiParam, IntPtr pvParam, SPIF fWinIni);
 
         [DllImport("user32.dll")]
         public static extern bool TranslateMessage(ref MSG lpMsg);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr DispatchMessage(ref MSG lpmsg);
-
-        [DllImport("user32.dll")]
-        public static extern int GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
-
-        /// <summary>
-        /// Retrieves a handle to the foreground window (the window with which the user is currently
-        /// working). The system assigns a slightly higher priority to the thread that creates the
-        /// foreground window than it does to other threads.
-        /// <para>
-        /// See https://msdn.microsoft.com/en-us/library/windows/desktop/ms633505%28v=vs.85%29.aspx
-        /// for more information.
-        /// </para>
-        /// </summary>
-        /// <returns>
-        /// C++ ( Type: Type: HWND ) <br/> The return value is a handle to the foreground window. The
-        /// foreground window can be NULL in certain circumstances, such as when a window is losing activation.
-        /// </returns>
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr DefWindowProc(IntPtr hWnd, PInvoke.User32.WindowMessage uMsg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         [DllImport("user32.dll")]
         public static extern bool UpdateWindow(IntPtr hWnd);
@@ -707,315 +700,5 @@ namespace Sandbox
 
         [DllImport("user32.dll")]
         public static extern IntPtr WindowFromPoint(POINT p);
-
-        [DllImport("user32.dll")]
-        public static extern bool EndPaint(IntPtr hWnd, ref PAINTSTRUCT lpPaint);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr BeginPaint(IntPtr hwnd, out PAINTSTRUCT lpPaint);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr RealChildWindowFromPoint(IntPtr hwndParent, POINT ptParentClientCoords);
-
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        public static extern uint RealGetWindowClass(IntPtr hwnd, [Out] StringBuilder pszType, uint cchType);
-
-        [DllImport("user32.dll")]
-        public static extern ushort RegisterClass(ref WNDCLASS lpWndClass);
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        public static extern bool GetClassInfoEx(IntPtr hInstance, string lpClassName, ref WNDCLASSEX lpWndClass);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.U2)]
-        public static extern short RegisterClassEx(ref WNDCLASSEX lpwcx);
-
-        public static IntPtr CreateFullscreenWindow(string className, string windowName)
-        {
-            return CreateFullscreenWindow(IntPtr.Zero, className, windowName, IntPtr.Zero);
-        }
-
-        public static IntPtr CreateFullscreenWindow(IntPtr hwndParent, string className, string windowName)
-        {
-            return CreateFullscreenWindow(hwndParent, className, windowName, IntPtr.Zero);
-        }
-
-        public static IntPtr CreateFullscreenWindow(IntPtr hwndParent, string className, string windowName, IntPtr hInstance)
-        {
-            if (hInstance == IntPtr.Zero)
-            {
-                hInstance = Process.GetCurrentProcess().Handle;
-            }
-
-            if (hwndParent == IntPtr.Zero)
-            {
-                hwndParent = Process.GetCurrentProcess().MainWindowHandle;
-            }
-
-            var hmon = MonitorFromWindow(hwndParent, MonitorOptions.MONITOR_DEFAULTTONEAREST);
-            MONITORINFO mi = new MONITORINFO();
-
-            if (!GetMonitorInfo(hmon, ref mi))
-            {
-                return IntPtr.Zero;
-            }
-
-            return CreateWindow(
-                className,
-                windowName,
-                WindowStyles.WS_POPUP | WindowStyles.WS_VISIBLE,
-                mi.rcMonitor.left,
-                mi.rcMonitor.top,
-                mi.rcMonitor.right - mi.rcMonitor.left,
-                mi.rcMonitor.bottom - mi.rcMonitor.top,
-                hwndParent,
-                IntPtr.Zero,
-                hInstance,
-                IntPtr.Zero);
-        }
-
-        public static IntPtr CreateWindow(
-                   string lpClassName,
-                   string lpWindowName,
-                   WindowStyles dwStyle,
-                   int x,
-                   int y,
-                   int nWidth,
-                   int nHeight,
-                   IntPtr hWndParent,
-                   IntPtr hMenu,
-                   IntPtr hInstance,
-                   IntPtr lpParam)
-        {
-            return CreateWindowEx(0, lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
-        }
-
-        /// <summary>
-        /// The CreateWindowEx function creates an overlapped, pop-up, or child window with an
-        /// extended window style; otherwise, this function is identical to the CreateWindow function.
-        /// </summary>
-        /// <param name="dwExStyle">Specifies the extended window style of the window being created.</param>
-        /// <param name="lpClassName">
-        /// Pointer to a null-terminated string or a class atom created by a previous call to the
-        /// RegisterClass or RegisterClassEx function. The atom must be in the low-order word of
-        /// lpClassName; the high-order word must be zero. If lpClassName is a string, it specifies
-        /// the window class name. The class name can be any name registered with RegisterClass or
-        /// RegisterClassEx, provided that the module that registers the class is also the module
-        /// that creates the window. The class name can also be any of the predefined system class names.
-        /// </param>
-        /// <param name="lpWindowName">
-        /// Pointer to a null-terminated string that specifies the window name. If the window style
-        /// specifies a title bar, the window title pointed to by lpWindowName is displayed in the
-        /// title bar. When using CreateWindow to create controls, such as buttons, check boxes, and
-        /// static controls, use lpWindowName to specify the text of the control. When creating a
-        /// static control with the SS_ICON style, use lpWindowName to specify the icon name or
-        /// identifier. To specify an identifier, use the syntax "#num".
-        /// </param>
-        /// <param name="dwStyle">
-        /// Specifies the style of the window being created. This parameter can be a combination of
-        /// window styles, plus the control styles indicated in the Remarks section.
-        /// </param>
-        /// <param name="x">
-        /// Specifies the initial horizontal position of the window. For an overlapped or pop-up
-        /// window, the x parameter is the initial x-coordinate of the window's upper-left corner, in
-        /// screen coordinates. For a child window, x is the x-coordinate of the upper-left corner of
-        /// the window relative to the upper-left corner of the parent window's client area. If x is
-        /// set to CW_USEDEFAULT, the system selects the default position for the window's upper-left
-        /// corner and ignores the y parameter. CW_USEDEFAULT is valid only for overlapped windows;
-        /// if it is specified for a pop-up or child window, the x and y parameters are set to zero.
-        /// </param>
-        /// <param name="y">
-        /// Specifies the initial vertical position of the window. For an overlapped or pop-up
-        /// window, the y parameter is the initial y-coordinate of the window's upper-left corner, in
-        /// screen coordinates. For a child window, y is the initial y-coordinate of the upper-left
-        /// corner of the child window relative to the upper-left corner of the parent window's
-        /// client area. For a list box y is the initial y-coordinate of the upper-left corner of the
-        /// list box's client area relative to the upper-left corner of the parent window's client area.
-        /// <para>
-        /// If an overlapped window is created with the WS_VISIBLE style bit set and the x parameter
-        /// is set to CW_USEDEFAULT, then the y parameter determines how the window is shown. If the
-        /// y parameter is CW_USEDEFAULT, then the window manager calls ShowWindow with the SW_SHOW
-        /// flag after the window has been created. If the y parameter is some other value, then the
-        /// window manager calls ShowWindow with that value as the nCmdShow parameter.
-        /// </para>
-        /// </param>
-        /// <param name="nWidth">
-        /// Specifies the width, in device units, of the window. For overlapped windows, nWidth is
-        /// the window's width, in screen coordinates, or CW_USEDEFAULT. If nWidth is CW_USEDEFAULT,
-        /// the system selects a default width and height for the window; the default width extends
-        /// from the initial x-coordinates to the right edge of the screen; the default height
-        /// extends from the initial y-coordinate to the top of the icon area. CW_USEDEFAULT is valid
-        /// only for overlapped windows; if CW_USEDEFAULT is specified for a pop-up or child window,
-        /// the nWidth and nHeight parameter are set to zero.
-        /// </param>
-        /// <param name="nHeight">
-        /// Specifies the height, in device units, of the window. For overlapped windows, nHeight is
-        /// the window's height, in screen coordinates. If the nWidth parameter is set to
-        /// CW_USEDEFAULT, the system ignores nHeight.
-        /// </param>
-        /// <param name="hWndParent">
-        /// Handle to the parent or owner window of the window being created. To create a child
-        /// window or an owned window, supply a valid window handle. This parameter is optional for
-        /// pop-up windows.
-        /// <para>
-        /// Windows 2000/XP: To create a message-only window, supply HWND_MESSAGE or a handle to an
-        /// existing message-only window.
-        /// </para>
-        /// </param>
-        /// <param name="hMenu">
-        /// Handle to a menu, or specifies a child-window identifier, depending on the window style.
-        /// For an overlapped or pop-up window, hMenu identifies the menu to be used with the window;
-        /// it can be NULL if the class menu is to be used. For a child window, hMenu specifies the
-        /// child-window identifier, an integer value used by a dialog box control to notify its
-        /// parent about events. The application determines the child-window identifier; it must be
-        /// unique for all child windows with the same parent window.
-        /// </param>
-        /// <param name="hInstance">
-        /// Handle to the instance of the module to be associated with the window.
-        /// </param>
-        /// <param name="lpParam">
-        /// Pointer to a value to be passed to the window through the CREATESTRUCT structure
-        /// (lpCreateParams member) pointed to by the lParam param of the WM_CREATE message. This
-        /// message is sent to the created window by this function before it returns.
-        /// <para>
-        /// If an application calls CreateWindow to create a MDI client window, lpParam should point
-        /// to a CLIENTCREATESTRUCT structure. If an MDI client window calls CreateWindow to create
-        /// an MDI child window, lpParam should point to a MDICREATESTRUCT structure. lpParam may be
-        /// NULL if no additional data is needed.
-        /// </para>
-        /// </param>
-        /// <returns>
-        /// If the function succeeds, the return value is a handle to the new window.
-        /// <para>
-        /// If the function fails, the return value is NULL. To get extended error information, call GetLastError.
-        /// </para>
-        /// <para>This function typically fails for one of the following reasons:</para>
-        /// <list type="">
-        /// <item>an invalid parameter value</item>
-        /// <item>the system class was registered by a different module</item>
-        /// <item>The WH_CBT hook is installed and returns a failure code</item>
-        /// <item>
-        /// if one of the controls in the dialog template is not registered, or its window window
-        /// procedure fails WM_CREATE or WM_NCCREATE
-        /// </item>
-        /// </list>
-        /// </returns>
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        public static extern IntPtr CreateWindowEx(
-           WindowStylesEx dwExStyle,
-           string lpClassName,
-           string lpWindowName,
-           WindowStyles dwStyle,
-           int x,
-           int y,
-           int nWidth,
-           int nHeight,
-           IntPtr hWndParent,
-           IntPtr hMenu,
-           IntPtr hInstance,
-           IntPtr lpParam);
-
-        // When you call this function, the WndProc function must respond to the WM_NCCREATE message
-        // by returning TRUE. If it does not, the creation process will fail. A null handle will be
-        // returned from CreateWindowEx and GetLastError will return 0. See MSDN on WM_NCCREATE
-        // (http://msdn.microsoft.com/en-us/library/ms632635.aspx) and also WM_CREATE
-        // (http://msdn.microsoft.com/en-us/library/ms632619.aspx). You can have your WndProc call
-        // DefWindowProc, which will take care of this issue. Tips & Tricks: This method should have
-        // at least two versions: one where lpClassName is string, and other in which is IntPtr. I
-        // sometimes get error 1407 ("Cannot find window class.") when trying to create the
-        // window(after a successful call to RegisterClass) Solution is to pass in the second version
-        // the class as new IntPtr((int)(uint)regResult), where regResult is the result from RegisterClass
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        public static extern IntPtr CreateWindowEx(
-                   int dwExStyle,
-                   string lpClassName,
-                   string lpWindowName,
-                   WindowStyles dwStyle,
-                   int x,
-                   int y,
-                   int nWidth,
-                   int nHeight,
-                   IntPtr hWndParent,
-                   IntPtr hMenu,
-                   IntPtr hInstance,
-                   IntPtr lpParam);
-
-        [DllImport("user32.dll")]
-        public static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, MonitorEnumDelegate lpfnEnum, IntPtr dwData);
-
-        [DllImport("user32.dll")]
-        public static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFOEX lpmi);
-
-        [DllImport("user32")]
-        public static extern bool GetMonitorInfo(IntPtr hMonitor, MONITORINFO lpmi);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern int GetSystemMetrics(SystemMetric smIndex);
-
-        //#if(WINVER >= 0x0600)
-        //OSVERSIONINFO osvi;
-        //memset(&osvi,0,sizeof(osvi));
-        //osvi.dwOSVersionInfoSize = sizeof(osvi);
-        //GetVersionEx(&osvi);
-        //if (osvi.dwMajorVersion < 6)
-        //ncm.cbSize -= sizeof(ncm.iPaddedBorderWidth);
-        //#endif
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr MonitorFromPoint(POINT pt, MonitorOptions dwFlags);
-
-        [DllImport("User32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern IntPtr MonitorFromPoint(POINT point, int flags);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr MonitorFromRect(ref RECT lprc, MonitorOptions dwFlags);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr MonitorFromWindow(IntPtr hwnd, MonitorOptions dwFlags);
-
-        [DllImport("User32.dll", SetLastError = true)]
-        public static extern bool SetWindowDisplayAffinity(IntPtr hWnd, int dwAffinity);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SystemParametersInfo(SPI uiAction, uint uiParam, IntPtr pvParam, SPIF fWinIni);
-
-        /// <summary>
-        /// Returns the number of Displays using the Win32 functions
-        /// </summary>
-        /// <returns>collection of Display Info</returns>
-        public List<DisplayInfo> GetDisplays()
-        {
-            var col = new List<DisplayInfo>();
-
-            EnumDisplayMonitors(
-                IntPtr.Zero,
-                IntPtr.Zero,
-                delegate (IntPtr hMonitor, IntPtr hdcMonitor, ref RECT lprcMonitor, IntPtr dwData)
-                {
-                    var mi = new MONITORINFO();
-                    mi.cbSize = Marshal.SizeOf(mi);
-                    bool success = GetMonitorInfo(hMonitor, ref mi);
-
-                    if (success)
-                    {
-                        var di = new DisplayInfo();
-                        di.ScreenWidth = (mi.rcMonitor.right - mi.rcMonitor.left).ToString();
-                        di.ScreenHeight = (mi.rcMonitor.bottom - mi.rcMonitor.top).ToString();
-                        di.MonitorArea = mi.rcMonitor;
-                        di.WorkArea = mi.rcWork;
-                        di.Availability = mi.dwFlags.ToString();
-                        col.Add(di);
-                    }
-
-                    return true;
-                },
-                IntPtr.Zero);
-            return col;
-        }
-
-        #endregion Public Methods
     }
 }

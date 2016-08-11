@@ -3,6 +3,7 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), EnlistmentInfo.props))\EnlistmentInfo.props" Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), EnlistmentInfo.props))' != '' " />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{C1F31CA5-1734-49F6-868E-1FB9A2E7EF37}</ProjectGuid>
@@ -10,6 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Sandbox</RootNamespace>
     <AssemblyName>Sandbox</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -91,13 +93,9 @@
     <Compile Include="DisplayApi\DisplayApi.cs" />
     <Compile Include="DisplayApi\DisplayData.cs" />
     <Compile Include="DisplayApi\DisplayInfo.cs" />
-    <Compile Include="DisplayApi\Dpi.cs" />
-    <Compile Include="DisplayApi\DpiAwareApi.cs" />
-    <Compile Include="DisplayApi\DpiAwareWpfWindow.cs" />
     <Compile Include="DisplayApi\DRAWTEXTPARAMS.cs" />
     <Compile Include="DwmApi.cs" />
     <Compile Include="DisplayApi\DWMWINDOWATTRIBUTE.cs" />
-    <Compile Include="DisplayApi\PerMonitorDpiHelperMethods.cs" />
     <Compile Include="Gdi32.cs" />
     <Compile Include="HelloWin.cs" />
     <Compile Include="DisplayApi\HELPINFO.cs" />
@@ -116,8 +114,6 @@
     <Compile Include="DisplayApi\MSGBOXPARAMS.cs" />
     <Compile Include="DisplayApi\NONCLIENTMETRICS.cs" />
     <Compile Include="DisplayApi\PAINTSTRUCT.cs" />
-    <Compile Include="DisplayApi\PerMonitorDpiHelper.cs" />
-    <Compile Include="DisplayApi\POINT.cs" />
     <Compile Include="DisplayApi\POINTL.cs" />
     <Compile Include="DisplayApi\PrintData.cs" />
     <Compile Include="DisplayApi\QueryDisplayConfig.cs" />
@@ -133,8 +129,6 @@
     <Compile Include="DisplayApi\SystemIcons.cs" />
     <Compile Include="DisplayApi\SystemMetric.cs" />
     <Compile Include="DisplayApi\TextFormats.cs" />
-    <Compile Include="Kernel32.cs" />
-    <Compile Include="User32.cs" />
     <Compile Include="DisplayApi\WindowFromPointFlags.cs" />
     <Compile Include="DisplayApi\WINDOWINFO.cs" />
     <Compile Include="DisplayApi\WINDOWPLACEMENT.cs" />
@@ -144,6 +138,7 @@
     <Compile Include="DisplayApi\WINMAXINFO.cs" />
     <Compile Include="DisplayApi\WNDCLASS.cs" />
     <Compile Include="DisplayApi\WNDCLASSEX.cs" />
+    <Compile Include="User32.cs" />
     <Compile Include="WndProc.cs" />
     <Compile Include="MyPInvoke.cs" />
     <Compile Include="OleApi.cs" />

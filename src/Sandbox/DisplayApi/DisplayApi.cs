@@ -12,8 +12,6 @@ namespace Sandbox
     /// </summary>
     public class DisplayApi
     {
-        #region Public Enums
-
         [Flags]
         public enum D3DmdtVideoSignalStandard : uint
         {
@@ -206,9 +204,31 @@ namespace Sandbox
             UseDatabaseCurrent = TopologyInternal | TopologyClone | TopologyExtend | TopologyExternal
         }
 
-        #endregion Public Enums
+        public static void DoWork()
+        {
+            int numPathArrayElements;
+            int numModeInfoArrayElements;
 
-        #region Public Methods
+            // query active paths from the current computer.
+            if (GetDisplayConfigBufferSizes(QueryDisplayFlags.OnlyActivePaths, out numPathArrayElements, out numModeInfoArrayElements) == 0)
+            {
+                // 0 is success.
+                var pathInfoArray = new DisplayConfigPathInfo[numPathArrayElements];
+                var modeInfoArray = new DisplayConfigModeInfo[numModeInfoArrayElements];
+                DisplayApi.DisplayConfigTopologyId currentTopologyId; // don't use it right now.
+
+                var first = Marshal.SizeOf(new DisplayConfigPathInfo());
+                var second = Marshal.SizeOf(new DisplayConfigModeInfo());
+
+                var status = QueryDisplayConfig2(
+                    QueryDisplayFlags.OnlyActivePaths,
+                    ref numPathArrayElements,
+                    pathInfoArray,
+                    ref numModeInfoArrayElements,
+                    modeInfoArray,
+                     IntPtr.Zero);
+            }
+        }
 
         [DllImport("User32.dll")]
         public static extern int GetDisplayConfigBufferSizes(QueryDisplayFlags flags, out int numPathArrayElements, out int numModeInfoArrayElements);
@@ -243,39 +263,9 @@ namespace Sandbox
         public static extern int SetDisplayConfig2(
             uint numPathArrayElements,
             DisplayConfigPathInfo[] pathArray,
-            uint numModeInfoArrayElements, 
+            uint numModeInfoArrayElements,
             DisplayConfigModeInfo[] modeInfoArray,
 SdcFlags flags);
-
-        public static void DoWork()
-        {
-            int numPathArrayElements;
-            int numModeInfoArrayElements;
-
-            // query active paths from the current computer.
-            if (GetDisplayConfigBufferSizes(QueryDisplayFlags.OnlyActivePaths, out numPathArrayElements, out numModeInfoArrayElements) == 0)
-            {
-                // 0 is success.
-                var pathInfoArray = new DisplayConfigPathInfo[numPathArrayElements];
-                var modeInfoArray = new DisplayConfigModeInfo[numModeInfoArrayElements];
-                DisplayApi.DisplayConfigTopologyId currentTopologyId; // don't use it right now.
-
-                var first = Marshal.SizeOf(new DisplayConfigPathInfo());
-                var second = Marshal.SizeOf(new DisplayConfigModeInfo());
-
-                var status = QueryDisplayConfig2(
-                    QueryDisplayFlags.OnlyActivePaths,
-                    ref numPathArrayElements,
-                    pathInfoArray,
-                    ref numModeInfoArrayElements,
-                    modeInfoArray,
-                     IntPtr.Zero);
-            }
-        }
-
-        #endregion Public Methods
-
-        #region Public Structs
 
         [StructLayout(LayoutKind.Sequential)]
         public struct DisplayConfig2DRegion
@@ -385,7 +375,5 @@ SdcFlags flags);
             public int x;
             public int y;
         }
-
-        #endregion Public Structs
     }
 }
