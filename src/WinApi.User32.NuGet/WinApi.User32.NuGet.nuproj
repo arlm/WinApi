@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\WinApi.User32\WinApi.User32.csproj" />
+    <ProjectReference Include="..\Sandbox.NuGet\Sandbox.NuGet.nuproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="WinApi.User32.nuspec" />

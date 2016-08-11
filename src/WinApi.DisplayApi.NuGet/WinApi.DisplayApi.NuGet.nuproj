@@ -42,6 +42,8 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\WinApi.DisplayApi\WinApi.DisplayApi.csproj" />
+    <ProjectReference Include="..\WinApi.Core.NuGet\WinApi.Core.NuGet.nuproj" />
+    <ProjectReference Include="..\WinApi.User32.NuGet\WinApi.User32.NuGet.nuproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="WinApi.DisplayApi.nuspec" />
