@@ -4,6 +4,7 @@ image: Visual Studio 2015
 branches:
   except:
   - develop/*
+  - develop
 configuration: Release
 install:
 - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/install-nuget-3-3-0.ps1'))
@@ -17,6 +18,8 @@ build:
   project: src\WinApi.sln
   parallel: true
   verbosity: minimal
+test:
+  assemblies: '**/bin/**/*.Tests.dll'
 artifacts:
 - path: bin\**\*.nupkg
   name: NuGet Package
