@@ -49,7 +49,6 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Kernel32.cs" />
     <Compile Include="SystemDrawingExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CoreExtensions.cs" />

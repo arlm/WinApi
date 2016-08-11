@@ -9,32 +9,32 @@ namespace WinApi.Core
     {
         public static ushort GetHiWord(IntPtr dwValue)
         {
-            return (ushort)((((long)dwValue) >> 0x10) & 0xffff);
+            return unchecked((ushort)((((long)dwValue) >> 0x10) & 0xffff));
         }
 
         public static ushort GetHiWord(uint dwValue)
         {
-            return (ushort)(dwValue >> 0x10);
+            return unchecked((ushort)(dwValue >> 0x10));
         }
 
         public static ushort GetLoWord(IntPtr dwValue)
         {
-            return (ushort)(((long)dwValue) & 0xffff);
+            return unchecked((ushort)(((long)dwValue) & 0xffff));
         }
 
         public static ushort GetLoWord(uint dwValue)
         {
-            return (ushort)(dwValue & 0xffff);
+            return unchecked((ushort)(dwValue & 0xffff));
         }
 
         public static IntPtr MakeLParam(int loWord, int hiWord)
         {
-            return (IntPtr)((loWord & 0xffff) | ((hiWord & 0xffff) << 0x10));
+            return new IntPtr(unchecked((loWord & 0xffff) | ((hiWord & 0xffff) << 0x10)));
         }
 
         public static IntPtr MakeWParam(int loWord, int hiWord)
         {
-            return (IntPtr)((loWord & 0xffff) | ((hiWord & 0xffff) << 0x10));
+            return new IntPtr(unchecked((loWord & 0xffff) | ((hiWord & 0xffff) << 0x10)));
         }
     }
 }
