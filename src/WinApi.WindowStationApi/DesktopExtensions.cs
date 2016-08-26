@@ -16,7 +16,7 @@ namespace WinApi.WindowStationApi
                 throw new ArgumentException("Invalid desktop station name", "name");
             }
 
-            var access = (PInvoke.User32.DESKTOP_ACCESS_MASK)PInvoke.User32.DESKTOP_ACCESS_MASK.SpecificRight.DESKTOP_ALL_ACCESS;
+            var access = (uint) PInvoke.Kernel32.ACCESS_MASK.DesktopSpecificRight.DESKTOP_ALL_ACCESS;
             var handle = PInvoke.User32.CreateDesktop(name, null, IntPtr.Zero, PInvoke.User32.DesktopCreationFlags.None, access, (PInvoke.Kernel32.SECURITY_ATTRIBUTES?)null);
 
             if (handle.IsInvalid)
@@ -34,7 +34,7 @@ namespace WinApi.WindowStationApi
             {
                 throw new ArgumentException("Invalid window station name", "name");
             }
-            var access = (PInvoke.User32.WINDOW_STATION_ACCESS_MASK)PInvoke.User32.WINDOW_STATION_ACCESS_MASK.SpecificRight.WINSTA_ALL_ACCESS;
+            var access =(uint) PInvoke.Kernel32.ACCESS_MASK.WindowStationSpecificRight.WINSTA_ALL_ACCESS;
             var handle = PInvoke.User32.CreateWindowStation(name, PInvoke.User32.WindowStationCreationFlags.None, access, (PInvoke.Kernel32.SECURITY_ATTRIBUTES?)null);
 
             if (handle.IsInvalid)
@@ -116,7 +116,7 @@ namespace WinApi.WindowStationApi
             bool hasInput = false;
             uint capacity = sizeof(bool);
 
-            if (PInvoke.User32.GetUserObjectInformation(desktop.DangerousGetHandle(), PInvoke.User32.ObjectInformationType.UOI_IO, &hasInput, unchecked((uint)capacity), &capacity))
+            if (PInvoke.User32.GetUserObjectInformation(desktop.DangerousGetHandle(), PInvoke.User32.ObjectInformationType.UOI_IO, &hasInput, unchecked(capacity), &capacity))
             {
                 return hasInput;
             }

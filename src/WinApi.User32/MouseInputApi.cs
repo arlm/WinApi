@@ -3,11 +3,22 @@
 
 using System;
 using System.Runtime.InteropServices;
+using WinApi.Core;
 
 namespace WinApi.User32
 {
     public static class MouseInputApi
     {
+        public static int GetWheelDeltaWParam(IntPtr wParam)
+        {
+            return unchecked((short)CoreExtensions.GetHiWord(wParam));
+        }
+
+        public static int GetWheelDeltaWParam(uint wParam)
+        {
+            return unchecked((short)CoreExtensions.GetHiWord(wParam));
+        }
+
         public static void SendMouseInput(PInvoke.User32.MOUSEEVENTF flags, int data, int dx = 0, int dy = 0)
         {
             PInvoke.User32.INPUT[] input = new[] { new PInvoke.User32.INPUT() };

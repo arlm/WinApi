@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Runtime.InteropServices;
 
 namespace WinApi.Console
 {
@@ -18,23 +17,13 @@ namespace WinApi.Console
 
     public static class ConsoleEventHooker
     {
-        #region Private Fields
-
         private static EventHandler _closed;
         private static ConsoleEventDelegate _d;
         private static bool _initedHooker;
         private static EventHandler _shutdown;
 
-        #endregion Private Fields
-
-        #region Private Delegates
-
         // A delegate type to be used as the handler routine for SetConsoleCtrlHandler.
         private delegate bool ConsoleEventDelegate(CtrlTypes ctrlType);
-
-        #endregion Private Delegates
-
-        #region Public Events
 
         public static event EventHandler Closed
         {
@@ -64,10 +53,6 @@ namespace WinApi.Console
             }
         }
 
-        #endregion Public Events
-
-        #region Private Methods
-
         private static bool ConsoleEventCallback(CtrlTypes eventType)
         {
             if (eventType == CtrlTypes.CTRL_CLOSE_EVENT)
@@ -92,12 +77,7 @@ namespace WinApi.Console
 
             _initedHooker = true;
             _d = ConsoleEventCallback;
-            SetConsoleCtrlHandler(_d, true);
-        }
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool SetConsoleCtrlHandler(ConsoleEventDelegate callback, bool add);
-
-        #endregion Private Methods
+            PInvoke.Kernel32.SetConsoleCtrlHandler(_d, true);
+        }        
     }
 }

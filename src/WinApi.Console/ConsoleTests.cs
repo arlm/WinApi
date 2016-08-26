@@ -19,8 +19,6 @@ namespace WinApi.Console
 {
     public static class ConsoleTests
     {
-        #region Public Methods
-
         [DebuggerStepThrough]
         [Conditional("UNOBSERVED_TASK_EXCEPTION")]
         [Conditional("CORRUPTED_STATE_EXCEPTION")]
@@ -41,10 +39,6 @@ namespace WinApi.Console
                 TestUncatchedException();
             }
         }
-
-        #endregion Public Methods
-
-        #region Private Methods
 
         [DebuggerStepThrough]
         [Conditional("CATCH_EXCEPTION")]
@@ -189,7 +183,5 @@ namespace WinApi.Console
                 var t = Task.Run(() => TestTask(catchTaskException));
             }
         }
-
-        #endregion Private Methods
     }
 }

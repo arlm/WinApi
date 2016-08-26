@@ -18,12 +18,10 @@ namespace WinApi.Console
 
         public UnhandledExceptionEventArgs(UnobservedTaskExceptionEventArgs e) : base(e.Exception.Flatten(), !e.Observed)
         {
-            
         }
 
         public UnhandledExceptionEventArgs(FirstChanceExceptionEventArgs e) : base(e.Exception, false)
         {
-
         }
 
         public int ExitCode { get; set; } = int.MinValue;

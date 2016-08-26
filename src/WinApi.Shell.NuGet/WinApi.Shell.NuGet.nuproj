@@ -12,16 +12,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>27e9da93-0099-4440-bf1a-ce86a59827c6</ProjectGuid>
+    <ProjectGuid>{F1BAE703-6D06-4A45-8DA9-00E9D2597E6E}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup>
-    <NuSpecTemplate>WinApi.User32.nuspec</NuSpecTemplate>
+    <NuSpecTemplate>WinApi.Shell.nuspec</NuSpecTemplate>
     <NuProjPath Condition=" '$(NuProjPath)' == '' ">$(MSBuildExtensionsPath)\NuProj\</NuProjPath>
   </PropertyGroup>
   <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
   <PropertyGroup Label="Configuration">
-    <Id>WinApi.User32</Id>
-    <Title>WinApi.User32</Title>
+    <Id>WinApi.Shell</Id>
+    <Title>WinApi.Shell</Title>
     <Authors>Alexandre Rocha Lima e Marcondes</Authors>
     <Owners>arlm</Owners>
     <Summary>WinApi.Core.NuGet</Summary>
@@ -41,11 +41,10 @@
     <OutputPath>$(ProjectRoot)bin\$(Configuration)\Packages\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WinApi.User32\WinApi.User32.csproj" />
-    <ProjectReference Include="..\WinApi.Core.NuGet\WinApi.Core.NuGet.nuproj" />
+    <ProjectReference Include="..\WinApi.Shell\WinApi.Shell.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="WinApi.User32.nuspec" />
+    <None Include="WinApi.Shell.nuspec" />
   </ItemGroup>
   <Import Project="$(NuProjPath)\NuProj.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), EnlistmentInfo.targets))\EnlistmentInfo.targets" Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), EnlistmentInfo.targets))' != '' " />

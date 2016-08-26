@@ -102,16 +102,16 @@ namespace WinApi.HighDpi
             get
             {
                 var dpi = Dpi.Default;
-                var desktopDC = IntPtr.Zero;
+                var desktopDC = PInvoke.User32.SafeDCHandle.Null;
 
                 try
                 {
-                    desktopDC = Sandbox.User32.GetDC(IntPtr.Zero);
+                    desktopDC = PInvoke.User32.GetDC(IntPtr.Zero);
 
-                    if (desktopDC != IntPtr.Zero)
+                    if (!desktopDC.IsInvalid)
                     {
-                        dpi.X = Sandbox.Gdi32.GetDeviceCaps(desktopDC, Sandbox.DeviceCap.LOGPIXELSX);
-                        dpi.Y = Sandbox.Gdi32.GetDeviceCaps(desktopDC, Sandbox.DeviceCap.LOGPIXELSY);
+                        dpi.X = PInvoke.Gdi32.GetDeviceCaps(desktopDC, PInvoke.Gdi32.DeviceCap.LOGPIXELSX);
+                        dpi.Y = PInvoke.Gdi32.GetDeviceCaps(desktopDC, PInvoke.Gdi32.DeviceCap.LOGPIXELSY);
                     }
                 }
                 catch (Exception)
@@ -119,9 +119,9 @@ namespace WinApi.HighDpi
                 }
                 finally
                 {
-                    if (desktopDC != IntPtr.Zero)
+                    if (!desktopDC.IsInvalid)
                     {
-                        User32.ReleaseDC(IntPtr.Zero, desktopDC);
+                        desktopDC.Dispose();
                     }
                 }
 
@@ -204,7 +204,7 @@ namespace WinApi.HighDpi
                 }
             }
 
-            var monitor = Sandbox.User32.MonitorFromWindow(hwnd, Sandbox.MonitorOptions.MONITOR_DEFAULTTONEAREST);
+            var monitor = PInvoke.User32.MonitorFromWindow(hwnd, PInvoke.User32.MonitorOptions.MONITOR_DEFAULTTONEAREST);
 
             return GetDpiForMonitor(monitor, dpiType);
         }
@@ -280,10 +280,10 @@ namespace WinApi.HighDpi
         {
             try
             {
-                var monitorInfo = Sandbox.MONITORINFOEX.Create();
-                if (Sandbox.User32.GetMonitorInfo(hwndMonitor, ref monitorInfo))
+                var monitorInfo = PInvoke.User32.MONITORINFOEX.Create();
+                if (PInvoke.User32.GetMonitorInfo(hwndMonitor, ref monitorInfo))
                 {
-                    int logicalDesktopWidth = Sandbox.User32.GetSystemMetrics(Sandbox.SystemMetric.SM_CXVIRTUALSCREEN);
+                    int logicalDesktopWidth = PInvoke.User32.GetSystemMetrics(PInvoke.User32.SystemMetric.SM_CXVIRTUALSCREEN);
                     int logicalMonitorWidth = monitorInfo.Monitor.Right - monitorInfo.Monitor.Left;
                     int pathArrayLength = 5;
 

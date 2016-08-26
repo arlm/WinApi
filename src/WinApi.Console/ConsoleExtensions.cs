@@ -88,7 +88,7 @@ namespace WinApi.Console
             System.Console.CancelKeyPress += Console_CancelKeyPress;
 
             consoleCtrlHandler = new PHANDLER_ROUTINE(Console_CtrlEvent);
-            SetConsoleCtrlHandler(consoleCtrlHandler, true);
+            PInvoke.User32.SetConsoleCtrlHandler(consoleCtrlHandler, true);
 
             SystemEvents.EventsThreadShutdown += SystemEvents_EventsThreadShutdown;
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
@@ -292,13 +292,6 @@ namespace WinApi.Console
             }
         }
 
-        /// Return Type: BOOL->int
-        ///dwCtrlEvent: DWORD->unsigned int
-        ///dwProcessGroupId: DWORD->unsigned int
-        [DllImport("kernel32.dll", EntryPoint = "GenerateConsoleCtrlEvent")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GenerateConsoleCtrlEvent(uint dwCtrlEvent, uint dwProcessGroupId);
-
         public static void SetTitle()
         {
             var assembly = Assembly.GetCallingAssembly();
@@ -377,19 +370,6 @@ namespace WinApi.Console
         ///_Mask: unsigned int
         [DllImport("msvcr80.dll", EntryPoint = "_set_abort_behavior", CallingConvention = CallingConvention.Cdecl)]
         private static extern uint _set_abort_behavior(uint _Flags, uint _Mask);
-
-        /// Return Type: BOOL->int
-        ///Source: LPWSTR->WCHAR*
-        ///Target: LPWSTR->WCHAR*
-        ///ExeName: LPWSTR->WCHAR*
-        [DllImport("kernel32.dll", EntryPoint = "AddConsoleAliasW")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool AddConsoleAliasW([MarshalAs(UnmanagedType.LPWStr)] System.Text.StringBuilder Source, [MarshalAs(UnmanagedType.LPWStr)] System.Text.StringBuilder Target, [MarshalAs(UnmanagedType.LPWStr)] System.Text.StringBuilder ExeName);
-
-        /// Return Type: BOOL->int
-        [DllImport("kernel32.dll", EntryPoint = "AllocConsole")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool AllocConsole();
 
         [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
@@ -516,12 +496,6 @@ namespace WinApi.Console
         [DllImport("msvcr80.dll", EntryPoint = "atexit", CallingConvention = CallingConvention.Cdecl)]
         private static extern int atexit(Anonymous_a3debd67_ecba_49a0_9c67_1b83f463a375 param0);
 
-        /// Return Type: BOOL->int
-        ///dwProcessId: DWORD->unsigned int
-        [DllImport("kernel32.dll", EntryPoint = "AttachConsole")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool AttachConsole(uint dwProcessId);
-
         private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
             hasFaulted = true;
@@ -587,15 +561,6 @@ namespace WinApi.Console
             return true;
         }
 
-        /// Return Type: HANDLE->void*
-        ///dwDesiredAccess: DWORD->unsigned int
-        ///dwShareMode: DWORD->unsigned int
-        ///lpSecurityAttributes: SECURITY_ATTRIBUTES*
-        ///dwFlags: DWORD->unsigned int
-        ///lpScreenBufferData: LPVOID->void*
-        [DllImport("kernel32.dll", EntryPoint = "CreateConsoleScreenBuffer")]
-        private static extern IntPtr CreateConsoleScreenBuffer(uint dwDesiredAccess, uint dwShareMode, ref SECURITY_ATTRIBUTES lpSecurityAttributes, uint dwFlags, IntPtr lpScreenBufferData);
-
         private static void Dispose()
         {
             StopMarquee();
@@ -608,7 +573,7 @@ namespace WinApi.Console
             SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
             SystemEvents.EventsThreadShutdown -= SystemEvents_EventsThreadShutdown;
 
-            SetConsoleCtrlHandler(consoleCtrlHandler, false);
+            PInvoke.User32.SetConsoleCtrlHandler(consoleCtrlHandler, false);
             consoleCtrlHandler = null;
 
             System.Console.CancelKeyPress -= Console_CancelKeyPress;
@@ -647,106 +612,6 @@ namespace WinApi.Console
             }
         }
 
-        /// Return Type: BOOL->int
-        ///hConsoleInput: HANDLE->void*
-        [DllImport("kernel32.dll", EntryPoint = "FlushConsoleInputBuffer")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool FlushConsoleInputBuffer(IntPtr hConsoleInput);
-
-        /// Return Type: BOOL->int
-        [DllImport("kernel32.dll", EntryPoint = "FreeConsole")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool FreeConsole();
-
-        /// Return Type: DWORD->unsigned int
-        ///AliasBuffer: LPWSTR->WCHAR*
-        ///AliasBufferLength: DWORD->unsigned int
-        ///ExeName: LPWSTR->WCHAR*
-        [DllImport("kernel32.dll", EntryPoint = "GetConsoleAliasesW")]
-        private static extern uint GetConsoleAliasesW([MarshalAs(UnmanagedType.LPWStr)] System.Text.StringBuilder AliasBuffer, uint AliasBufferLength, [MarshalAs(UnmanagedType.LPWStr)] System.Text.StringBuilder ExeName);
-
-        /// Return Type: DWORD->unsigned int
-        ///ExeNameBuffer: LPWSTR->WCHAR*
-        ///ExeNameBufferLength: DWORD->unsigned int
-        [DllImport("kernel32.dll", EntryPoint = "GetConsoleAliasExesW")]
-        private static extern uint GetConsoleAliasExesW([MarshalAs(UnmanagedType.LPWStr)] System.Text.StringBuilder ExeNameBuffer, uint ExeNameBufferLength);
-
-        /// Return Type: DWORD->unsigned int
-        ///Source: LPWSTR->WCHAR*
-        ///TargetBuffer: LPWSTR->WCHAR*
-        ///TargetBufferLength: DWORD->unsigned int
-        ///ExeName: LPWSTR->WCHAR*
-        [DllImport("kernel32.dll", EntryPoint = "GetConsoleAliasW")]
-        private static extern uint GetConsoleAliasW([MarshalAs(UnmanagedType.LPWStr)] System.Text.StringBuilder Source, [MarshalAs(UnmanagedType.LPWStr)] System.Text.StringBuilder TargetBuffer, uint TargetBufferLength, [MarshalAs(UnmanagedType.LPWStr)] System.Text.StringBuilder ExeName);
-
-        /// Return Type: UINT->unsigned int
-        [DllImport("kernel32.dll", EntryPoint = "GetConsoleCP")]
-        private static extern uint GetConsoleCP();
-
-        /// Return Type: BOOL->int
-        ///lpModeFlags: LPDWORD->DWORD*
-        [DllImport("kernel32.dll", EntryPoint = "GetConsoleDisplayMode")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetConsoleDisplayMode(ref uint lpModeFlags);
-
-        /// Return Type: COORD->_COORD
-        ///hConsoleOutput: HANDLE->void*
-        ///nFont: DWORD->unsigned int
-        [DllImport("kernel32.dll", EntryPoint = "GetConsoleFontSize")]
-        private static extern COORD GetConsoleFontSize(IntPtr hConsoleOutput, uint nFont);
-
-        /// Return Type: BOOL->int
-        ///hConsoleHandle: HANDLE->void*
-        ///lpMode: LPDWORD->DWORD*
-        [DllImport("kernel32.dll", EntryPoint = "GetConsoleMode")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetConsoleMode(IntPtr hConsoleHandle, ref uint lpMode);
-
-        /// Return Type: UINT->unsigned int
-        [DllImport("kernel32.dll", EntryPoint = "GetConsoleOutputCP")]
-        private static extern uint GetConsoleOutputCP();
-
-        /// Return Type: DWORD->unsigned int
-        ///lpdwProcessList: LPDWORD->DWORD*
-        ///dwProcessCount: DWORD->unsigned int
-        [DllImport("kernel32.dll", EntryPoint = "GetConsoleProcessList")]
-        private static extern uint GetConsoleProcessList(ref uint lpdwProcessList, uint dwProcessCount);
-
-        /// Return Type: BOOL->int
-        ///hConsoleOutput: HANDLE->void*
-        ///lpConsoleScreenBufferInfo: PCONSOLE_SCREEN_BUFFER_INFO->_CONSOLE_SCREEN_BUFFER_INFO*
-        [DllImport("kernel32.dll", EntryPoint = "GetConsoleScreenBufferInfo")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetConsoleScreenBufferInfo(IntPtr hConsoleOutput, ref CONSOLE_SCREEN_BUFFER_INFO lpConsoleScreenBufferInfo);
-
-        /// Return Type: BOOL->int
-        ///lpConsoleSelectionInfo: PCONSOLE_SELECTION_INFO->_CONSOLE_SELECTION_INFO*
-        [DllImport("kernel32.dll", EntryPoint = "GetConsoleSelectionInfo")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetConsoleSelectionInfo(ref CONSOLE_SELECTION_INFO lpConsoleSelectionInfo);
-
-        /// Return Type: DWORD->unsigned int
-        ///lpConsoleTitle: LPWSTR->WCHAR*
-        ///nSize: DWORD->unsigned int
-        [DllImport("kernel32.dll", EntryPoint = "GetConsoleTitleW")]
-        private static extern uint GetConsoleTitleW([MarshalAs(UnmanagedType.LPWStr)] System.Text.StringBuilder lpConsoleTitle, uint nSize);
-
-        /// Return Type: HWND->HWND__*
-        [DllImport("kernel32.dll", EntryPoint = "GetConsoleWindow")]
-        private static extern IntPtr GetConsoleWindow();
-
-        /// Return Type: COORD->_COORD
-        ///hConsoleOutput: HANDLE->void*
-        [DllImport("kernel32.dll", EntryPoint = "GetLargestConsoleWindowSize")]
-        private static extern COORD GetLargestConsoleWindowSize(IntPtr hConsoleOutput);
-
-        /// Return Type: BOOL->int
-        ///hConsoleInput: HANDLE->void*
-        ///lpNumberOfEvents: LPDWORD->DWORD*
-        [DllImport("kernel32.dll", EntryPoint = "GetNumberOfConsoleInputEvents")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetNumberOfConsoleInputEvents(IntPtr hConsoleInput, ref uint lpNumberOfEvents);
-
         private static void MarqueeThread()
         {
             while (marqueeRunning && pctComplete <= 100)
@@ -758,15 +623,6 @@ namespace WinApi.Console
 
             System.Console.Out.WriteLine(Environment.NewLine);
         }
-
-        /// Return Type: BOOL->int
-        ///hConsoleInput: HANDLE->void*
-        ///lpBuffer: PINPUT_RECORD->_INPUT_RECORD*
-        ///nLength: DWORD->unsigned int
-        ///lpNumberOfEventsRead: LPDWORD->DWORD*
-        [DllImport("kernel32.dll", EntryPoint = "PeekConsoleInputW")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool PeekConsoleInputW(IntPtr hConsoleInput, ref INPUT_RECORD lpBuffer, uint nLength, ref uint lpNumberOfEventsRead);
 
         private static void Process_Disposed(object sender, EventArgs e)
         {
@@ -832,45 +688,6 @@ namespace WinApi.Console
             }
         }
 
-        /// Return Type: BOOL->int
-        ///hConsoleInput: HANDLE->void*
-        ///lpBuffer: PINPUT_RECORD->_INPUT_RECORD*
-        ///nLength: DWORD->unsigned int
-        ///lpNumberOfEventsRead: LPDWORD->DWORD*
-        [DllImport("kernel32.dll", EntryPoint = "ReadConsoleInputW")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool ReadConsoleInputW(IntPtr hConsoleInput, ref INPUT_RECORD lpBuffer, uint nLength, ref uint lpNumberOfEventsRead);
-
-        /// Return Type: BOOL->int
-        ///hConsoleOutput: HANDLE->void*
-        ///lpBuffer: PCHAR_INFO->_CHAR_INFO*
-        ///dwBufferSize: COORD->_COORD
-        ///dwBufferCoord: COORD->_COORD
-        ///lpReadRegion: PSMALL_RECT->_SMALL_RECT*
-        [DllImport("kernel32.dll", EntryPoint = "ReadConsoleOutputW")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool ReadConsoleOutputW(IntPtr hConsoleOutput, ref CHAR_INFO lpBuffer, COORD dwBufferSize, COORD dwBufferCoord, ref SMALL_RECT lpReadRegion);
-
-        /// Return Type: BOOL->int
-        ///hConsoleInput: HANDLE->void*
-        ///lpBuffer: LPVOID->void*
-        ///nNumberOfCharsToRead: DWORD->unsigned int
-        ///lpNumberOfCharsRead: LPDWORD->DWORD*
-        ///lpReserved: LPVOID->void*
-        [DllImport("kernel32.dll", EntryPoint = "ReadConsoleW")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool ReadConsoleW(IntPtr hConsoleInput, IntPtr lpBuffer, uint nNumberOfCharsToRead, ref uint lpNumberOfCharsRead, IntPtr lpReserved);
-
-        /// Return Type: BOOL->int
-        ///hConsoleOutput: HANDLE->void*
-        ///lpScrollRectangle: SMALL_RECT*
-        ///lpClipRectangle: SMALL_RECT*
-        ///dwDestinationOrigin: COORD->_COORD
-        ///lpFill: CHAR_INFO*
-        [DllImport("kernel32.dll", EntryPoint = "ScrollConsoleScreenBufferW")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool ScrollConsoleScreenBufferW(IntPtr hConsoleOutput, ref SMALL_RECT lpScrollRectangle, ref SMALL_RECT lpClipRectangle, COORD dwDestinationOrigin, ref CHAR_INFO lpFill);
-
         /// Return Type: void
         ///param0: terminate_function
         [DllImport("msvcr80.dll", EntryPoint = "set_terminate", CallingConvention = CallingConvention.Cdecl)]
@@ -880,98 +697,6 @@ namespace WinApi.Console
         ///param0: int
         [DllImport("msvcr80.dll", EntryPoint = "set_unexpected", CallingConvention = CallingConvention.Cdecl)]
         private static extern void set_unexpected(int param0);
-
-        /// Return Type: BOOL->int
-        ///hConsoleOutput: HANDLE->void*
-        [DllImport("kernel32.dll", EntryPoint = "SetConsoleActiveScreenBuffer")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetConsoleActiveScreenBuffer(IntPtr hConsoleOutput);
-
-        /// Return Type: BOOL->int
-        ///wCodePageID: UINT->unsigned int
-        [DllImport("kernel32.dll", EntryPoint = "SetConsoleCP")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetConsoleCP(uint wCodePageID);
-
-        /// <summary>
-        /// Adds or removes an application-defined HandlerRoutine function from the list of handler
-        /// functions for the calling process. If no handler function is specified, the function sets
-        /// an inheritable attribute that determines whether the calling process ignores CTRL+C signals.
-        /// </summary>
-        /// <param name="handlerRoutine">
-        /// A pointer to the application-defined HandlerRoutine function to be added or removed. This
-        /// parameter can be NULL.
-        /// </param>
-        /// <param name="add">
-        /// <para>
-        /// If this parameter is TRUE, the handler is added; if it is FALSE, the handler is removed.
-        /// </para>
-        /// <para>
-        /// If the HandlerRoutine parameter is NULL, a TRUE value causes the calling process to
-        /// ignore CTRL+C input, and a FALSE value restores normal processing of CTRL+C input. This
-        /// attribute of ignoring or processing CTRL+C is inherited by child processes.
-        /// </para>
-        /// </param>
-        /// <returns>
-        /// If the function succeeds, the return value is nonzero. If the function fails, the return
-        /// value is zero.To get extended error information, call GetLastError.
-        /// </returns>
-        /// <remarks>
-        /// <para>
-        /// This function provides a similar notification for console application and services that
-        /// WM_QUERYENDSESSION provides for graphical applications with a message pump. You could
-        /// also use this function from a graphical application, but there is no guarantee it would
-        /// arrive before the notification from WM_QUERYENDSESSION.
-        /// </para>
-        /// <para>
-        /// Each console process has its own list of application-defined HandlerRoutine functions
-        /// that handle CTRL+C and CTRL+BREAK signals. The handler functions also handle signals
-        /// generated by the system when the user closes the console, logs off, or shuts down the
-        /// system. Initially, the handler list for each process contains only a default handler
-        /// function that calls the ExitProcess function. A console process adds or removes
-        /// additional handler functions by calling the SetConsoleCtrlHandler function, which does
-        /// not affect the list of handler functions for other processes. When a console process
-        /// receives any of the control signals, its handler functions are called on a
-        /// last-registered, first-called basis until one of the handlers returns TRUE. If none of
-        /// the handlers returns TRUE, the default handler is called.
-        /// </para>
-        /// </remarks>
-        [DllImport("Kernel32", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetConsoleCtrlHandler(PHANDLER_ROUTINE handlerRoutine, [MarshalAs(UnmanagedType.Bool)] bool add);
-
-        /// Return Type: BOOL->int
-        ///hConsoleOutput: HANDLE->void*
-        ///dwCursorPosition: COORD->_COORD
-        [DllImport("kernel32.dll", EntryPoint = "SetConsoleCursorPosition")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetConsoleCursorPosition(IntPtr hConsoleOutput, COORD dwCursorPosition);
-
-        /// Return Type: BOOL->int
-        ///hConsoleHandle: HANDLE->void*
-        ///dwMode: DWORD->unsigned int
-        [DllImport("kernel32.dll", EntryPoint = "SetConsoleMode")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
-
-        /// Return Type: BOOL->int
-        ///wCodePageID: UINT->unsigned int
-        [DllImport("kernel32.dll", EntryPoint = "SetConsoleOutputCP")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetConsoleOutputCP(uint wCodePageID);
-
-        /// Return Type: BOOL->int
-        ///hConsoleOutput: HANDLE->void*
-        ///wAttributes: WORD->unsigned short
-        [DllImport("kernel32.dll", EntryPoint = "SetConsoleTextAttribute")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetConsoleTextAttribute(IntPtr hConsoleOutput, ushort wAttributes);
-
-        /// Return Type: BOOL->int
-        ///lpConsoleTitle: LPCWSTR->WCHAR*
-        [DllImport("kernel32.dll", EntryPoint = "SetConsoleTitleW")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetConsoleTitleW([MarshalAs(UnmanagedType.LPWStr)] string lpConsoleTitle);
 
         /// Return Type: int
         ///sig: int
@@ -1057,39 +782,6 @@ namespace WinApi.Console
                 spinnerPos = (spinnerPos >= 3) ? 0 : spinnerPos + 1;
             }
         }
-
-        /// Return Type: BOOL->int
-        ///hConsoleInput: HANDLE->void*
-        ///lpBuffer: INPUT_RECORD*
-        ///nLength: DWORD->unsigned int
-        ///lpNumberOfEventsWritten: LPDWORD->DWORD*
-        [DllImport("kernel32.dll", EntryPoint = "WriteConsoleInputW")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool WriteConsoleInputW(IntPtr hConsoleInput, ref INPUT_RECORD lpBuffer, uint nLength, ref uint lpNumberOfEventsWritten);
-
-        /// Return Type: BOOL->int
-        ///hConsoleOutput: HANDLE->void*
-        ///lpBuffer: CHAR_INFO*
-        ///dwBufferSize: COORD->_COORD
-        ///dwBufferCoord: COORD->_COORD
-        ///lpWriteRegion: PSMALL_RECT->_SMALL_RECT*
-        [DllImport("kernel32.dll", EntryPoint = "WriteConsoleOutputW")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool WriteConsoleOutputW(IntPtr hConsoleOutput, ref CHAR_INFO lpBuffer, COORD dwBufferSize, COORD dwBufferCoord, ref SMALL_RECT lpWriteRegion);
-
-        /// Return Type: BOOL->int
-        ///hConsoleOutput: HANDLE->void*
-        ///lpBuffer: void*
-        ///nNumberOfCharsToWrite: DWORD->unsigned int
-        ///lpNumberOfCharsWritten: LPDWORD->DWORD*
-        ///lpReserved: LPVOID->void*
-        [DllImport("kernel32.dll", EntryPoint = "WriteConsoleW")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool WriteConsoleW(IntPtr hConsoleOutput, IntPtr lpBuffer, uint nNumberOfCharsToWrite, ref uint lpNumberOfCharsWritten, IntPtr lpReserved);
-
-        /// Return Type: DWORD->unsigned int
-        [DllImport("kernel32.dll", EntryPoint = "WTSGetActiveConsoleSessionId")]
-        private static extern uint WTSGetActiveConsoleSessionId();
 
         [StructLayout(LayoutKind.Sequential)]
         private struct CHAR_INFO

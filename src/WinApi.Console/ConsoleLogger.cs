@@ -9,16 +9,10 @@ namespace WinApi.Console
 {
     public class ConsoleLogger : IDisposable
     {
-        #region Private Fields
-
         /// <summary>
         /// Implements IDisposable so we implement IDisposable, too!
         /// </summary>
         private StreamWriter _writer;
-
-        #endregion Private Fields
-
-        #region Public Constructors
 
         /// <summary>
         /// Creates a new instance of Logger.
@@ -29,10 +23,6 @@ namespace WinApi.Console
             _writer = new StreamWriter(filename);
         }
 
-        #endregion Public Constructors
-
-        #region Private Destructors
-
         /// <summary>
         /// Finalizer
         /// </summary>
@@ -42,10 +32,6 @@ namespace WinApi.Console
             Debug.WriteLine("Error - we forgot to dispose {0}", GetType().FullName);
             Dispose(false);
         }
-
-        #endregion Private Destructors
-
-        #region Public Methods
 
         /// <summary>
         /// Dispose / close this instance.
@@ -65,10 +51,6 @@ namespace WinApi.Console
             GC.SuppressFinalize(this);
         }
 
-        #endregion Public Methods
-
-        #region Protected Methods
-
         protected virtual void Dispose(bool disposing)
         {
             // Call base class
@@ -82,8 +64,6 @@ namespace WinApi.Console
 
             // Dispose unmanaged stuff.
         }
-
-        #endregion Protected Methods
 
         // Some usefull methods are required here to write log messages.
     }

@@ -4,7 +4,6 @@
 using System;
 using System.Runtime.InteropServices;
 using PInvoke;
-using Sandbox;
 
 namespace WinApi.User32
 {
@@ -13,7 +12,7 @@ namespace WinApi.User32
         public static IntPtr CreateWindow(
                    string lpClassName,
                    string lpWindowName,
-                   WindowStyles dwStyle,
+                   PInvoke.User32.WindowStyles dwStyle,
                    int x,
                    int y,
                    int nWidth,
@@ -23,12 +22,12 @@ namespace WinApi.User32
                    IntPtr hInstance,
                    IntPtr lpParam)
         {
-            return Sandbox.User32.CreateWindowEx(0, lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
+            return PInvoke.User32.CreateWindowEx(0, lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
         }
 
         public static bool GetExtendedFrameBounds(IntPtr handle, out RECT rectangle)
         {
-            var result = DwmApi.DwmGetWindowAttribute(handle, DWMWINDOWATTRIBUTE.ExtendedFrameBounds, out rectangle, Marshal.SizeOf(typeof(RECT)));
+            var result = PInvoke.DwmApi.DwmGetWindowAttribute(handle, PInvoke.DwmApi.DWMWINDOWATTRIBUTE.ExtendedFrameBounds, out rectangle, Marshal.SizeOf(typeof(RECT)));
 
             return result >= 0;
         }
@@ -80,7 +79,7 @@ namespace WinApi.User32
             PInvoke.User32.ShowWindow(hwnd, PInvoke.User32.WindowShowStyle.SW_SHOWNOACTIVATE);
             PInvoke.User32.SetWindowPos(
                 hwnd,
-                new IntPtr((int)SpecialWindowHandles.HWND_TOPMOST),
+                new IntPtr((int)PInvoke.User32.SpecialWindowHandles.HWND_TOPMOST),
                 rect.left,
                 rect.top,
                 rect.bottom - rect.top,
@@ -98,11 +97,11 @@ namespace WinApi.User32
 
             if (Environment.OSVersion.Version.Major >= 6)
             {
-                return Sandbox.User32.WindowFromPhysicalPoint(ps);
+                return PInvoke.User32.WindowFromPhysicalPoint(ps);
             }
             else
             {
-                return Sandbox.User32.WindowFromPoint(ps);
+                return PInvoke.User32.WindowFromPoint(ps);
             }
         }
     }
