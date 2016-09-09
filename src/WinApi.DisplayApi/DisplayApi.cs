@@ -7,9 +7,9 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using PInvoke;
-using Sandbox;
 using WinApi.Core;
 using WinApi.User32;
+using static PInvoke.User32;
 
 namespace WinApi
 {
@@ -58,7 +58,7 @@ namespace WinApi
             return CreateFullscreenWindow(hwndParent, className, windowName, IntPtr.Zero);
         }
 
-        public static IntPtr CreateFullscreenWindow(IntPtr hwndParent, string className, string windowName, IntPtr hInstance)
+        public static unsafe IntPtr CreateFullscreenWindow(IntPtr hwndParent, string className, string windowName, IntPtr hInstance)
         {
             if (hInstance == IntPtr.Zero)
             {
@@ -70,10 +70,10 @@ namespace WinApi
                 hwndParent = Process.GetCurrentProcess().MainWindowHandle;
             }
 
-            var hmon = Sandbox.User32.MonitorFromWindow(hwndParent, MonitorOptions.MONITOR_DEFAULTTONEAREST);
-            MONITORINFO mi = new MONITORINFO();
+            var hmon = MonitorFromWindow(hwndParent, MonitorOptions.MONITOR_DEFAULTTONEAREST);
+            var mi = new MONITORINFO();
 
-            if (!Sandbox.User32.GetMonitorInfo(hmon, ref mi))
+            if (!GetMonitorInfo(hmon, new IntPtr(&mi)))
             {
                 return IntPtr.Zero;
             }
@@ -103,12 +103,12 @@ namespace WinApi
 
         public static bool IsFullScreenWindow(IntPtr hWnd)
         {
-            var desktopHandle = PInvoke.User32.GetDesktopWindow();
-            var shellHandle = Sandbox.User32.GetShellWindow();
+            var desktopHandle = GetDesktopWindow();
+            var shellHandle = GetShellWindow();
 
             bool runningFullScreen = false;
 
-            if (hWnd != null && !hWnd.Equals(IntPtr.Zero))
+            if (!hWnd.Equals(IntPtr.Zero))
             {
                 if (!(hWnd.Equals(desktopHandle) || hWnd.Equals(shellHandle)))
                 {
@@ -140,7 +140,7 @@ namespace WinApi
             // the Height, Not sure if this is on my system or others.
             PInvoke.User32.SetWindowPos(
                 hwnd,
-                (IntPtr)SpecialWindowHandles.HWND_TOP,
+                (IntPtr)WindowApi.SpecialWindowHandles.HWND_TOP,
                 Screen.AllScreens[monitor].WorkingArea.Left,
                 Screen.AllScreens[monitor].WorkingArea.Top,
                 (windowRec.right - windowRec.left) + 16,
@@ -171,18 +171,18 @@ namespace WinApi
         /// Returns the number of Displays using the Win32 functions
         /// </summary>
         /// <returns>collection of Display Info</returns>
-        public List<DisplayInfo> GetDisplays()
+        public unsafe List<DisplayInfo> GetDisplays()
         {
             var col = new List<DisplayInfo>();
 
-            Sandbox.User32.EnumDisplayMonitors(
+            EnumDisplayMonitors(
                 IntPtr.Zero,
                 IntPtr.Zero,
                 delegate (IntPtr hMonitor, IntPtr hdcMonitor, ref RECT lprcMonitor, IntPtr dwData)
                 {
                     var mi = new MONITORINFO();
                     mi.cbSize = Marshal.SizeOf(mi);
-                    bool success = Sandbox.User32.GetMonitorInfo(hMonitor, ref mi);
+                    bool success = GetMonitorInfo(hMonitor, new IntPtr(&mi));
 
                     if (success)
                     {

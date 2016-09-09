@@ -3,15 +3,13 @@
 
 using PInvoke;
 
-namespace Sandbox
+namespace WinApi
 {
     /// <summary>
     /// The struct that contains the display information
     /// </summary>
     public class DisplayInfo
     {
-        #region Public Properties
-
         public string Availability { get; set; }
 
         public RECT MonitorArea { get; set; }
@@ -21,7 +19,5 @@ namespace Sandbox
         public string ScreenWidth { get; set; }
 
         public RECT WorkArea { get; set; }
-
-        #endregion Public Properties
     }
 }

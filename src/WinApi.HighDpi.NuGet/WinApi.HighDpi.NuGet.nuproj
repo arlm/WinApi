@@ -41,9 +41,6 @@
     <OutputPath>$(ProjectRoot)bin\$(Configuration)\Packages\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WinApi.HighDpi\WinApi.HighDpi.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="WinApi.HighDpi.nuspec" />
   </ItemGroup>
   <Import Project="$(NuProjPath)\NuProj.targets" />

@@ -57,6 +57,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisplayInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DisplayApi.cs" />
   </ItemGroup>

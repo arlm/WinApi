@@ -8,8 +8,6 @@ namespace Sandbox
     [StructLayout(LayoutKind.Sequential)]
     public struct DisplayData
     {
-        #region Public Fields
-
         // DWORD->unsigned int
         public uint dmDisplayFixedOutput;
 
@@ -18,7 +16,5 @@ namespace Sandbox
 
         // POINTL->_POINTL
         public POINTL dmPosition;
-
-        #endregion Public Fields
     }
 }
