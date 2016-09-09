@@ -78,7 +78,7 @@ namespace WinApi
                 return IntPtr.Zero;
             }
 
-            return WindowApi.CreateWindow(
+            return CreateWindow(
                 className,
                 windowName,
                 WindowStyles.WS_POPUP | WindowStyles.WS_VISIBLE,
@@ -96,7 +96,7 @@ namespace WinApi
         {
             IntPtr hWnd;
 
-            hWnd = PInvoke.User32.GetForegroundWindow();
+            hWnd = GetForegroundWindow();
 
             return IsFullScreenWindow(hWnd);
         }
@@ -112,7 +112,7 @@ namespace WinApi
             {
                 if (!(hWnd.Equals(desktopHandle) || hWnd.Equals(shellHandle)))
                 {
-                    RECT appBounds = WindowApi.GetWindowRectangle(hWnd);
+                    var appBounds = WindowApi.GetWindowRectangle(hWnd);
 
                     var screenBounds = Screen.FromHandle(hWnd).Bounds;
 
@@ -138,14 +138,14 @@ namespace WinApi
 
             // When I move a window to a different monitor it subtracts 16 from the Width and 38 from
             // the Height, Not sure if this is on my system or others.
-            PInvoke.User32.SetWindowPos(
+            SetWindowPos(
                 hwnd,
-                (IntPtr)WindowApi.SpecialWindowHandles.HWND_TOP,
+                (IntPtr)SpecialWindowHandles.HWND_TOP,
                 Screen.AllScreens[monitor].WorkingArea.Left,
                 Screen.AllScreens[monitor].WorkingArea.Top,
                 (windowRec.right - windowRec.left) + 16,
                 (windowRec.bottom - windowRec.top) + 38,
-                PInvoke.User32.SetWindowPosFlags.SWP_SHOWWINDOW);
+                SetWindowPosFlags.SWP_SHOWWINDOW);
         }
 
         public Screen DetectScreen(IntPtr windowHandle)
@@ -182,7 +182,7 @@ namespace WinApi
                 {
                     var mi = new MONITORINFO();
                     mi.cbSize = Marshal.SizeOf(mi);
-                    bool success = GetMonitorInfo(hMonitor, new IntPtr(&mi));
+                    var success = GetMonitorInfo(hMonitor, new IntPtr(&mi));
 
                     if (success)
                     {

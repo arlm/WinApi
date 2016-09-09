@@ -15,6 +15,6 @@ namespace Sandbox
         public uint dmDisplayOrientation;
 
         // POINTL->_POINTL
-        public POINTL dmPosition;
+        public PInvoke.POINT dmPosition;
     }
 }

@@ -55,7 +55,7 @@ namespace WinApi.Console
         private const string WAIT_PROMPT = "\n\nPress any key to quit ...";
 
         private static readonly char[] spinner = { '-', '\\', '|', '/' };
-        //private static PHANDLER_ROUTINE consoleCtrlHandler;
+        private static PInvoke.Kernel32.PHANDLER_ROUTINE consoleCtrlHandler;
         private static volatile bool hasFaulted ;
         private static volatile bool hasHandledOnExit;
         private static bool isCapturingFirstChanceException;
@@ -87,8 +87,8 @@ namespace WinApi.Console
 
             System.Console.CancelKeyPress += Console_CancelKeyPress;
 
-            //consoleCtrlHandler = new PHANDLER_ROUTINE(Console_CtrlEvent);
-            //PInvoke.Kernel32.SetConsoleCtrlHandler(consoleCtrlHandler, true);
+            consoleCtrlHandler = new PInvoke.Kernel32.PHANDLER_ROUTINE(Console_CtrlEvent);
+            PInvoke.Kernel32.SetConsoleCtrlHandler(consoleCtrlHandler, true);
 
             SystemEvents.EventsThreadShutdown += SystemEvents_EventsThreadShutdown;
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
@@ -105,88 +105,88 @@ namespace WinApi.Console
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void Anonymous_a3debd67_ecba_49a0_9c67_1b83f463a375();
 
-        /// <summary>
-        /// The PHANDLER_ROUTINE type defines a pointer a callback function to handle control signals
-        /// received by the process. When the signal is received, the system creates a new thread in
-        /// the process to execute the function.
-        /// <para>
-        /// Because the system creates a new thread in the process to execute the handler function,
-        /// it is possible that the handler function will be terminated by another thread in the
-        /// process. Be sure to synchronize threads in the process with the thread for the handler function.
-        /// </para>
-        /// <para>
-        /// Each console process has its own list of HandlerRoutine functions. Initially, this list
-        /// contains only a default handler function that calls ExitProcess. A console process adds
-        /// or removes additional handler functions by calling the SetConsoleCtrlHandler function,
-        /// which does not affect the list of handler functions for other processes. When a console
-        /// process receives any of the control signals, its handler functions are called on a
-        /// last-registered, first-called basis until one of the handlers returns TRUE. If none of
-        /// the handlers returns TRUE, the default handler is called.
-        /// </para>
-        /// </summary>
-        /// <param name="dwCtrlType">
-        /// The type of control signal received by the handler.
-        /// <para>
-        /// The CTRL_CLOSE_EVENT, CTRL_LOGOFF_EVENT, and CTRL_SHUTDOWN_EVENT signals give the process
-        /// an opportunity to clean up before termination. A HandlerRoutine can perform any necessary
-        /// cleanup, then take one of the following actions:
-        /// <list>
-        /// <item>Call the ExitProcess function to terminate the process</item>
-        /// <item>
-        /// Return FALSE.If none of the registered handler functions returns TRUE, the default
-        /// handler terminates the process
-        /// </item>
-        /// <item>
-        /// Return TRUE. In this case, no other handler functions are called and the system
-        /// terminates the process
-        /// </item>
-        /// </list>
-        /// </para>
-        /// <para>
-        /// A process can use the SetProcessShutdownParameters function to prevent the system from
-        /// displaying a dialog box to the user during logoff or shutdown. In this case, the system
-        /// terminates the process when HandlerRoutine returns TRUE or when the time-out period elapses.
-        /// </para>
-        /// </param>
-        /// <returns>
-        /// If the function handles the control signal, it should return TRUE. If it returns FALSE,
-        /// the next handler function in the list of handlers for this process is used.
-        /// </returns>
-        /// <remarks>
-        /// Note that a third-party library or DLL can install a console control handler for your
-        /// application. If it does, this handler overrides the default handler, and can cause the
-        /// application to exit when the user logs off.
-        /// <para>
-        /// Windows 7, Windows 8, Windows 8.1 and Windows 10: If a console application loads the
-        /// gdi32.dll or user32.dll library, the HandlerRoutine function that you specify when you
-        /// call SetConsoleCtrlHandler does not get called for the CTRL_LOGOFF_EVENT and
-        /// CTRL_SHUTDOWN_EVENT events.
-        /// </para>
-        /// <para>
-        /// The operating system recognizes processes that load gdi32.dll or user32.dll as Windows
-        /// applications rather than console applications. This behavior also occurs for console
-        /// applications that do not call functions in gdi32.dll or user32.dll directly, but do call
-        /// functions such as Shell functions that do in turn call functions in gdi32.dll or user32.dll.
-        /// </para>
-        /// <para>
-        /// To receive events when a user signs out or the device shuts down in these circumstances,
-        /// create a hidden window in your console application, and then handle the
-        /// WM_QUERYENDSESSION and WM_ENDSESSION window messages that the hidden window receives. You
-        /// can create a hidden window by calling the CreateWindowEx method with the dwExStyle
-        /// parameter set to 0.
-        /// </para>
-        /// <para>
-        /// When a console application is run as a service, it receives a modified default console
-        /// control handler. This modified handler does not call ExitProcess when processing the
-        /// CTRL_LOGOFF_EVENT and CTRL_SHUTDOWN_EVENT signals. This allows the service to continue
-        /// running after the user logs off. If the service installs its own console control handler,
-        /// this handler is called before the default handler. If the installed handler calls
-        /// ExitProcess when processing the CTRL_LOGOFF_EVENT signal, the service exits when the user
-        /// logs off.
-        /// </para>
-        /// </remarks>
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private delegate bool PHANDLER_ROUTINE(CtrlType dwCtrlType);
+        ///// <summary>
+        ///// The PHANDLER_ROUTINE type defines a pointer a callback function to handle control signals
+        ///// received by the process. When the signal is received, the system creates a new thread in
+        ///// the process to execute the function.
+        ///// <para>
+        ///// Because the system creates a new thread in the process to execute the handler function,
+        ///// it is possible that the handler function will be terminated by another thread in the
+        ///// process. Be sure to synchronize threads in the process with the thread for the handler function.
+        ///// </para>
+        ///// <para>
+        ///// Each console process has its own list of HandlerRoutine functions. Initially, this list
+        ///// contains only a default handler function that calls ExitProcess. A console process adds
+        ///// or removes additional handler functions by calling the SetConsoleCtrlHandler function,
+        ///// which does not affect the list of handler functions for other processes. When a console
+        ///// process receives any of the control signals, its handler functions are called on a
+        ///// last-registered, first-called basis until one of the handlers returns TRUE. If none of
+        ///// the handlers returns TRUE, the default handler is called.
+        ///// </para>
+        ///// </summary>
+        ///// <param name="dwCtrlType">
+        ///// The type of control signal received by the handler.
+        ///// <para>
+        ///// The CTRL_CLOSE_EVENT, CTRL_LOGOFF_EVENT, and CTRL_SHUTDOWN_EVENT signals give the process
+        ///// an opportunity to clean up before termination. A HandlerRoutine can perform any necessary
+        ///// cleanup, then take one of the following actions:
+        ///// <list>
+        ///// <item>Call the ExitProcess function to terminate the process</item>
+        ///// <item>
+        ///// Return FALSE.If none of the registered handler functions returns TRUE, the default
+        ///// handler terminates the process
+        ///// </item>
+        ///// <item>
+        ///// Return TRUE. In this case, no other handler functions are called and the system
+        ///// terminates the process
+        ///// </item>
+        ///// </list>
+        ///// </para>
+        ///// <para>
+        ///// A process can use the SetProcessShutdownParameters function to prevent the system from
+        ///// displaying a dialog box to the user during logoff or shutdown. In this case, the system
+        ///// terminates the process when HandlerRoutine returns TRUE or when the time-out period elapses.
+        ///// </para>
+        ///// </param>
+        ///// <returns>
+        ///// If the function handles the control signal, it should return TRUE. If it returns FALSE,
+        ///// the next handler function in the list of handlers for this process is used.
+        ///// </returns>
+        ///// <remarks>
+        ///// Note that a third-party library or DLL can install a console control handler for your
+        ///// application. If it does, this handler overrides the default handler, and can cause the
+        ///// application to exit when the user logs off.
+        ///// <para>
+        ///// Windows 7, Windows 8, Windows 8.1 and Windows 10: If a console application loads the
+        ///// gdi32.dll or user32.dll library, the HandlerRoutine function that you specify when you
+        ///// call SetConsoleCtrlHandler does not get called for the CTRL_LOGOFF_EVENT and
+        ///// CTRL_SHUTDOWN_EVENT events.
+        ///// </para>
+        ///// <para>
+        ///// The operating system recognizes processes that load gdi32.dll or user32.dll as Windows
+        ///// applications rather than console applications. This behavior also occurs for console
+        ///// applications that do not call functions in gdi32.dll or user32.dll directly, but do call
+        ///// functions such as Shell functions that do in turn call functions in gdi32.dll or user32.dll.
+        ///// </para>
+        ///// <para>
+        ///// To receive events when a user signs out or the device shuts down in these circumstances,
+        ///// create a hidden window in your console application, and then handle the
+        ///// WM_QUERYENDSESSION and WM_ENDSESSION window messages that the hidden window receives. You
+        ///// can create a hidden window by calling the CreateWindowEx method with the dwExStyle
+        ///// parameter set to 0.
+        ///// </para>
+        ///// <para>
+        ///// When a console application is run as a service, it receives a modified default console
+        ///// control handler. This modified handler does not call ExitProcess when processing the
+        ///// CTRL_LOGOFF_EVENT and CTRL_SHUTDOWN_EVENT signals. This allows the service to continue
+        ///// running after the user logs off. If the service installs its own console control handler,
+        ///// this handler is called before the default handler. If the installed handler calls
+        ///// ExitProcess when processing the CTRL_LOGOFF_EVENT signal, the service exits when the user
+        ///// logs off.
+        ///// </para>
+        ///// </remarks>
+        //[return: MarshalAs(UnmanagedType.Bool)]
+        //private delegate bool PHANDLER_ROUTINE(CtrlType dwCtrlType);
 
         /// Return Type: void
         ///param0: int[]
@@ -528,7 +528,7 @@ namespace WinApi.Console
             }
         }
 
-        private static bool Console_CtrlEvent(CtrlType sig)
+        private static bool Console_CtrlEvent(PInvoke.Kernel32.ControlType sig)
         {
             hasFaulted = true;
 
@@ -573,8 +573,8 @@ namespace WinApi.Console
             SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
             SystemEvents.EventsThreadShutdown -= SystemEvents_EventsThreadShutdown;
 
-            //PInvoke.User32.SetConsoleCtrlHandler(consoleCtrlHandler, false);
-            //consoleCtrlHandler = null;
+            PInvoke.Kernel32.SetConsoleCtrlHandler(consoleCtrlHandler, false);
+            consoleCtrlHandler = null;
 
             System.Console.CancelKeyPress -= Console_CancelKeyPress;
 
