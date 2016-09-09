@@ -102,16 +102,16 @@ namespace WinApi.HighDpi
             get
             {
                 var dpi = Dpi.Default;
-                var desktopDC = PInvoke.User32.SafeDCHandle.Null;
+                var desktopDC = User32.SafeDCHandle.Null;
 
                 try
                 {
-                    desktopDC = PInvoke.User32.GetDC(IntPtr.Zero);
+                    desktopDC = User32.GetDC(IntPtr.Zero);
 
                     if (!desktopDC.IsInvalid)
                     {
-                        dpi.X = PInvoke.Gdi32.GetDeviceCaps(desktopDC, PInvoke.Gdi32.DeviceCap.LOGPIXELSX);
-                        dpi.Y = PInvoke.Gdi32.GetDeviceCaps(desktopDC, PInvoke.Gdi32.DeviceCap.LOGPIXELSY);
+                        dpi.X = Gdi32.GetDeviceCaps(desktopDC, Gdi32.DeviceCap.LOGPIXELSX);
+                        dpi.Y = Gdi32.GetDeviceCaps(desktopDC, Gdi32.DeviceCap.LOGPIXELSY);
                     }
                 }
                 catch (Exception)
@@ -204,7 +204,7 @@ namespace WinApi.HighDpi
                 }
             }
 
-            var monitor = PInvoke.User32.MonitorFromWindow(hwnd, PInvoke.User32.MonitorOptions.MONITOR_DEFAULTTONEAREST);
+            var monitor = User32.MonitorFromWindow(hwnd, User32.MonitorOptions.MONITOR_DEFAULTTONEAREST);
 
             return GetDpiForMonitor(monitor, dpiType);
         }
@@ -225,7 +225,7 @@ namespace WinApi.HighDpi
 
             try
             {
-                HResult result = SHCore.GetProcessDpiAwareness(hprocess, out awareness);
+                var result = SHCore.GetProcessDpiAwareness(hprocess, out awareness);
 
                 if (result.Failed)
                 {
@@ -280,12 +280,12 @@ namespace WinApi.HighDpi
         {
             try
             {
-                var monitorInfo = PInvoke.User32.MONITORINFOEX.Create();
-                if (PInvoke.User32.GetMonitorInfo(hwndMonitor, new IntPtr(&monitorInfo)))
+                var monitorInfo = User32.MONITORINFOEX.Create();
+                if (User32.GetMonitorInfo(hwndMonitor, new IntPtr(&monitorInfo)))
                 {
-                    int logicalDesktopWidth = PInvoke.User32.GetSystemMetrics(PInvoke.User32.SystemMetric.SM_CXVIRTUALSCREEN);
+                    var logicalDesktopWidth = User32.GetSystemMetrics(User32.SystemMetric.SM_CXVIRTUALSCREEN);
                     int logicalMonitorWidth = monitorInfo.Monitor.right - monitorInfo.Monitor.left;
-                    int pathArrayLength = 5;
+                    //int pathArrayLength = 5;
 
                     //var result = User32.QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, ref pathArrayLength, out pathArray, ref pathArrayLength, out pathArray, out topologyId);
 
@@ -387,7 +387,7 @@ namespace WinApi.HighDpi
         {
             try
             {
-                HResult result = SHCore.SetProcessDpiAwareness(value);
+                var result = SHCore.SetProcessDpiAwareness(value);
 
                 return result.Succeeded;
             }
@@ -397,7 +397,7 @@ namespace WinApi.HighDpi
                 {
                     // We're running on either Vista, Windows 7 or Windows 8.
                     // Trying to set it as ShellScalingApi.PROCESS_DPI_AWARENESS.PROCESS_SYSTEM_DPI_AWARE.
-                    return value == PROCESS_DPI_AWARENESS.PROCESS_SYSTEM_DPI_AWARE ? User32.SetProcessDPIAware() : false;
+                    return value == PROCESS_DPI_AWARENESS.PROCESS_SYSTEM_DPI_AWARE && User32.SetProcessDPIAware();
                 }
                 catch (EntryPointNotFoundException)
                 {
@@ -409,7 +409,7 @@ namespace WinApi.HighDpi
                 {
                     // We're running on either Vista, Windows 7 or Windows 8.
                     // Trying to set it as ShellScalingApi.PROCESS_DPI_AWARENESS.PROCESS_SYSTEM_DPI_AWARE.
-                    return value == PROCESS_DPI_AWARENESS.PROCESS_SYSTEM_DPI_AWARE ? User32.SetProcessDPIAware() : false;
+                    return value == PROCESS_DPI_AWARENESS.PROCESS_SYSTEM_DPI_AWARE && User32.SetProcessDPIAware();
                 }
                 catch (EntryPointNotFoundException)
                 {

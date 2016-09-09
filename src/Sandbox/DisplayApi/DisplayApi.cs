@@ -10,7 +10,7 @@ namespace Sandbox
     /// This class takes care of wrapping "Connecting and Configuring Displays(CCD) Win32 API" Author
     /// Erti-Chris Eelmaa || easter199 at hotmail dot com
     /// </summary>
-    public class DisplayApi
+    public static class DisplayApi
     {
         [Flags]
         public enum D3DmdtVideoSignalStandard : uint
@@ -215,7 +215,7 @@ namespace Sandbox
                 // 0 is success.
                 var pathInfoArray = new DisplayConfigPathInfo[numPathArrayElements];
                 var modeInfoArray = new DisplayConfigModeInfo[numModeInfoArrayElements];
-                DisplayApi.DisplayConfigTopologyId currentTopologyId; // don't use it right now.
+               // DisplayConfigTopologyId currentTopologyId; // don't use it right now.
 
                 var first = Marshal.SizeOf(new DisplayConfigPathInfo());
                 var second = Marshal.SizeOf(new DisplayConfigModeInfo());

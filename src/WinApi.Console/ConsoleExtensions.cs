@@ -55,24 +55,24 @@ namespace WinApi.Console
         private const string WAIT_PROMPT = "\n\nPress any key to quit ...";
 
         private static readonly char[] spinner = { '-', '\\', '|', '/' };
-        private static PHANDLER_ROUTINE consoleCtrlHandler;
-        private static volatile bool hasFaulted = false;
-        private static volatile bool hasHandledOnExit = false;
-        private static bool isCapturingFirstChanceException = false;
+        //private static PHANDLER_ROUTINE consoleCtrlHandler;
+        private static volatile bool hasFaulted ;
+        private static volatile bool hasHandledOnExit;
+        private static bool isCapturingFirstChanceException;
 
-        private volatile static bool marqueeRunning = false;
+        private volatile static bool marqueeRunning;
 
-        private static Thread marqueeThread = null;
+        private static Thread marqueeThread;
 
         private volatile static bool marqueeWithProgress = true;
 
-        private volatile static float pctComplete = 0;
+        private volatile static float pctComplete;
 
-        private static bool shouldContinueOnBreak = false;
+        private static bool shouldContinueOnBreak;
 
         private static bool shouldPrompt = true;
 
-        private static int spinnerPos = 0;
+        private static int spinnerPos;
 
         static ConsoleExtensions()
         {
@@ -759,9 +759,9 @@ namespace WinApi.Console
             }
         }
 
-        private static void UpdateProgress(float pctComplete)
+        private static void UpdateProgress(float completion)
         {
-            if (pctComplete >= 100f)
+            if (completion >= 100f)
             {
                 System.Console.Out.WriteLine("\rProcess Complete!".PadRight(System.Console.BufferWidth));
             }
@@ -771,7 +771,7 @@ namespace WinApi.Console
 
                 if (marqueeWithProgress)
                 {
-                    marquee = $"\rWorking... {spinner[spinnerPos]} - {pctComplete:0.0}%";
+                    marquee = $"\rWorking... {spinner[spinnerPos]} - {completion:0.0}%";
                 }
                 else
                 {
