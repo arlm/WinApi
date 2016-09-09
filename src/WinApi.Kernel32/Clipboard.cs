@@ -11,40 +11,42 @@ namespace WinApi.Kernel32
     {
         public static bool SetText(string text)
         {
-            IntPtr ptr = IntPtr.Zero;
-            bool result = false;
+            //IntPtr ptr = IntPtr.Zero;
+            //bool result = false;
 
-            result = PInvoke.Kernel32.OpenClipboard(IntPtr.Zero);
-            if (!result)
-            {
-                return result;
-            }
+            //result = PInvoke.User32.OpenClipboard(IntPtr.Zero);
+            //if (!result)
+            //{
+            //    return result;
+            //}
 
-            try
-            {
-                result &= PInvoke.Kernel32.EmptyClipboard();
+            //try
+            //{
+            //    result &= PInvoke.User32.EmptyClipboard();
 
-                if (result)
-                {
-                    // IMPORTANT: SetClipboardData requires memory that was acquired with GlobalAlloc
-                    //            using GMEM_MOVABLE.
-                    ptr = CopyToMoveableMemory(text);
-                    result &= ptr == IntPtr.Zero;
+            //    if (result)
+            //    {
+            //        // IMPORTANT: SetClipboardData requires memory that was acquired with GlobalAlloc
+            //        //            using GMEM_MOVABLE.
+            //        ptr = CopyToMoveableMemory(text);
+            //        result &= ptr == IntPtr.Zero;
 
-                    result &= PInvoke.Kernel32.SetClipboardData(13, ptr).ToInt64() == 0;
-                }
-            }
-            finally
-            {
-                result &= PInvoke.Kernel32.CloseClipboard();
+            //        result &= PInvoke.User32.SetClipboardData(13, ptr).ToInt64() == 0;
+            //    }
+            //}
+            //finally
+            //{
+            //    result &= PInvoke.User32.CloseClipboard();
 
-                if (ptr != IntPtr.Zero)
-                {
-                    PInvoke.Kernel32.GlobalFree(ptr);
-                }
-            }
+            //    if (ptr != IntPtr.Zero)
+            //    {
+            //        PInvoke.Kernel32.GlobalFree(ptr);
+            //    }
+            //}
 
-            return result;
+            //return result;
+
+            return false;
         }
 
         /// <summary>
@@ -62,40 +64,42 @@ namespace WinApi.Kernel32
         /// handle table is full (256 max currently). Note Win32Exception is a subclass of
         /// ExternalException so this is OK in the documented Clipboard interface.
         /// </exception>
-        internal static IntPtr CopyToMoveableMemory(byte[] data)
-        {
-            // detect this before GlobalAlloc does.
-            if (data == null || data.Length == 0)
-            {
-                throw new ArgumentException("Can't create a zero length memory block.");
-            }
+        //internal static IntPtr CopyToMoveableMemory(byte[] data)
+        //{
+        //    // detect this before GlobalAlloc does.
+        //    if (data == null || data.Length == 0)
+        //    {
+        //        throw new ArgumentException("Can't create a zero length memory block.");
+        //    }
 
-            IntPtr hmem = PInvoke.Kernel32.GlobalAlloc(
-                PInvoke.Kernel32.GblobalAllocFlags.GMEM_MOVEABLE | PInvoke.Kernel32.GblobalAllocFlags.GMEM_DDESHARE, 
-                new UIntPtr(unchecked((uint)data.Length)));
+        //    IntPtr hmem = PInvoke.Kernel32.GlobalAlloc(
+        //        PInvoke.Kernel32.GblobalAllocFlags.GMEM_MOVEABLE | PInvoke.Kernel32.GblobalAllocFlags.GMEM_DDESHARE, 
+        //        new UIntPtr(unchecked((uint)data.Length)));
 
-            if (hmem == IntPtr.Zero)
-            {
-                throw new PInvoke.Win32Exception();
-            }
+        //    if (hmem == IntPtr.Zero)
+        //    {
+        //        throw new PInvoke.Win32Exception();
+        //    }
 
-            IntPtr hmem_ptr = PInvoke.Kernel32.GlobalLock(hmem);
+        //    IntPtr hmem_ptr = PInvoke.Kernel32.GlobalLock(hmem);
 
-            // If the allocation was valid this shouldn't occur.
-            if (hmem_ptr == IntPtr.Zero)
-            {
-                throw new PInvoke.Win32Exception();
-            }
+        //    // If the allocation was valid this shouldn't occur.
+        //    if (hmem_ptr == IntPtr.Zero)
+        //    {
+        //        throw new PInvoke.Win32Exception();
+        //    }
 
-            Marshal.Copy(data, 0, hmem_ptr, data.Length);
-            PInvoke.Kernel32.GlobalUnlock(hmem);
+        //    Marshal.Copy(data, 0, hmem_ptr, data.Length);
+        //    PInvoke.Kernel32.GlobalUnlock(hmem);
 
-            return hmem;
-        }
+        //    return hmem;
+        //}
 
         internal static IntPtr CopyToMoveableMemory(string data)
         {
-            return CopyToMoveableMemory(Encoding.UTF8.GetBytes(data));
+            //return CopyToMoveableMemory(Encoding.UTF8.GetBytes(data));
+
+            return IntPtr.Zero;
         }
     }
 }

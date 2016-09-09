@@ -8,8 +8,6 @@ namespace Sandbox
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
     public struct DEVMODE
     {
-        #region Public Fields
-
         public DeviceDescriptionUnion description;
 
         // DWORD->unsigned int
@@ -90,7 +88,5 @@ namespace Sandbox
         public short dmYResolution;
 
         public DeviceFlagsUnion flags;
-
-        #endregion Public Fields
     }
 }

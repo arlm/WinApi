@@ -18,60 +18,60 @@ namespace Sandbox
             IntPtr hInstance = Process.GetCurrentProcess().Handle;
             string szAppName = "HelloWin";
 
-            WNDCLASS wndclass;
+            PInvoke.User32.WNDCLASS wndclass;
 
-            wndclass.style = ClassStyles.HorizontalRedraw | ClassStyles.VerticalRedraw;
+            wndclass.style = PInvoke.User32.ClassStyles.HorizontalRedraw | PInvoke.User32.ClassStyles.VerticalRedraw;
             wndclass.lpfnWndProc = (hWnd, message, wParam, lParam) =>
             {
                 IntPtr hdc;
-                PAINTSTRUCT ps;
+                PInvoke.User32.PAINTSTRUCT ps;
                 RECT rect;
 
                 switch (message)
                 {
                     case PInvoke.User32.WindowMessage.WM_PAINT:
-                        hdc = Sandbox.User32.BeginPaint(hWnd, out ps);
-                        Sandbox.User32.GetClientRect(hWnd, out rect);
+                        hdc = PInvoke.User32.BeginPaint(hWnd, out ps);
+                        PInvoke.User32.GetClientRect(hWnd, out rect);
 
-                        Sandbox.User32.DrawText(hdc, "Hello, Windows 98!", -1, ref rect, TextFormats.DT_SINGLELINE | TextFormats.DT_CENTER | TextFormats.DT_VCENTER);
+                        PInvoke.User32.DrawText(hdc, "Hello, Windows 98!".ToCharArray(), -1, ref rect, PInvoke.User32.TextFormats.DT_SINGLELINE | PInvoke.User32.TextFormats.DT_CENTER | PInvoke.User32.TextFormats.DT_VCENTER);
 
-                        Sandbox.User32.EndPaint(hWnd, ref ps);
+                        PInvoke.User32.EndPaint(hWnd, ref ps);
                         return IntPtr.Zero;
 
                     case PInvoke.User32.WindowMessage.WM_DESTROY:
-                        Sandbox.User32.PostQuitMessage(0);
+                        PInvoke.User32.PostQuitMessage(0);
                         return IntPtr.Zero;
                 }
 
-                return Sandbox.User32.DefWindowProc(hWnd, message, wParam, lParam);
+                return PInvoke.User32.DefWindowProc(hWnd, message, wParam, lParam);
             };
 
             wndclass.cbClsExtra = 0;
             wndclass.cbWndExtra = 0;
             wndclass.hInstance = hInstance;
-            wndclass.hIcon = Sandbox.User32.LoadIcon(IntPtr.Zero, new IntPtr((int)SystemIcons.IDI_APPLICATION));
-            wndclass.hCursor = Sandbox.User32.LoadCursor(IntPtr.Zero, new IntPtr((int)IDC_STANDARD_CURSORS.IDC_ARROW));
-            wndclass.hbrBackground = Gdi32.GetStockObject(StockObjects.WHITE_BRUSH);
+            wndclass.hIcon = PInvoke.User32.LoadIcon(IntPtr.Zero, new IntPtr((int)SystemIcons.IDI_APPLICATION));
+            wndclass.hCursor = PInvoke.User32.LoadCursor(IntPtr.Zero, new IntPtr((int)IDC_STANDARD_CURSORS.IDC_ARROW));
+            wndclass.hbrBackground = Gdi32.GetStockObject(PInvoke.Gdi32.StockObjects.WHITE_BRUSH);
             wndclass.lpszMenuName = null;
             wndclass.lpszClassName = szAppName;
 
-            ushort regResult = Sandbox.User32.RegisterClass(ref wndclass);
+            ushort regResult = PInvoke.User32.RegisterClass(ref wndclass);
 
             if (regResult == 0)
             {
-                Sandbox.User32.MessageBox(IntPtr.Zero, "This program requires Windows NT!", szAppName, MessageBoxOptions.IconError);
+                PInvoke.User32.MessageBox(IntPtr.Zero, "This program requires Windows NT!", szAppName, PInvoke.User32.MessageBoxOptions.IconError);
                 return;
             }
 
-            IntPtr hwnd = Sandbox.User32.CreateWindowEx(
-                WindowStylesEx.WS_EX_OVERLAPPEDWINDOW,
+            IntPtr hwnd = PInvoke.User32.CreateWindowEx(
+                PInvoke.User32.WindowStylesEx.WS_EX_OVERLAPPEDWINDOW,
                 szAppName, // window class name
                 "The Hello Program", // window caption
-                WindowStyles.WS_OVERLAPPEDWINDOW, // window style
-                Sandbox.User32.CW_USEDEFAULT, // initial x position
-                Sandbox.User32.CW_USEDEFAULT, // initial y position
-                Sandbox.User32.CW_USEDEFAULT, // initial x size
-                Sandbox.User32.CW_USEDEFAULT, // initial y size
+                PInvoke.User32.WindowStyles.WS_OVERLAPPEDWINDOW, // window style
+                PInvoke.User32.CW_USEDEFAULT, // initial x position
+                PInvoke.User32.CW_USEDEFAULT, // initial y position
+                PInvoke.User32.CW_USEDEFAULT, // initial x size
+                PInvoke.User32.CW_USEDEFAULT, // initial y size
                 IntPtr.Zero, // parent window handle
                 IntPtr.Zero, // window menu handle
                 hInstance, // program instance handle
@@ -84,13 +84,13 @@ namespace Sandbox
             }
 
             PInvoke.User32.ShowWindow(hwnd, PInvoke.User32.WindowShowStyle.SW_SHOWNORMAL);
-            Sandbox.User32.UpdateWindow(hwnd);
+            PInvoke.User32.UpdateWindow(hwnd);
 
-            MSG msg;
-            while (Sandbox.User32.GetMessage(out msg, IntPtr.Zero, 0, 0) != 0)
+            PInvoke.User32.MSG msg;
+            while (PInvoke.User32.GetMessage(out msg, IntPtr.Zero, 0, 0) != 0)
             {
-                Sandbox.User32.TranslateMessage(ref msg);
-                Sandbox.User32.DispatchMessage(ref msg);
+                PInvoke.User32.TranslateMessage(ref msg);
+                PInvoke.User32.DispatchMessage(ref msg);
             }
 
             return;

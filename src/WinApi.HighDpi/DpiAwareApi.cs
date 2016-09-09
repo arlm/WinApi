@@ -276,15 +276,15 @@ namespace WinApi.HighDpi
             return GetProcessDpiAwareness(IntPtr.Zero);
         }
 
-        public static int LogicalMonitorScaleFactor(IntPtr hwndMonitor)
+        public static unsafe int LogicalMonitorScaleFactor(IntPtr hwndMonitor)
         {
             try
             {
                 var monitorInfo = PInvoke.User32.MONITORINFOEX.Create();
-                if (PInvoke.User32.GetMonitorInfo(hwndMonitor, ref monitorInfo))
+                if (PInvoke.User32.GetMonitorInfo(hwndMonitor, new IntPtr(&monitorInfo)))
                 {
                     int logicalDesktopWidth = PInvoke.User32.GetSystemMetrics(PInvoke.User32.SystemMetric.SM_CXVIRTUALSCREEN);
-                    int logicalMonitorWidth = monitorInfo.Monitor.Right - monitorInfo.Monitor.Left;
+                    int logicalMonitorWidth = monitorInfo.Monitor.right - monitorInfo.Monitor.left;
                     int pathArrayLength = 5;
 
                     //var result = User32.QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, ref pathArrayLength, out pathArray, ref pathArrayLength, out pathArray, out topologyId);

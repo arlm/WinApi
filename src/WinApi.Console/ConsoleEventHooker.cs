@@ -77,7 +77,7 @@ namespace WinApi.Console
 
             _initedHooker = true;
             _d = ConsoleEventCallback;
-            PInvoke.Kernel32.SetConsoleCtrlHandler(_d, true);
+            //PInvoke.Kernel32.SetConsoleCtrlHandler(_d, true);
         }        
     }
 }

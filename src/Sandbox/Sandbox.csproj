@@ -40,24 +40,28 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PInvoke.Gdi32, Version=0.3.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\PInvoke.Gdi32.0.3.138-gb44b707375\lib\net40\PInvoke.Gdi32.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PInvoke.Kernel32, Version=0.3.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\PInvoke.SHCore.0.3.115\lib\net40\PInvoke.Kernel32.dll</HintPath>
+      <HintPath>..\..\packages\PInvoke.SHCore.0.3.138-gb44b707375\lib\net40\PInvoke.Kernel32.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PInvoke.SHCore, Version=0.3.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\PInvoke.SHCore.0.3.115\lib\net40\PInvoke.SHCore.dll</HintPath>
+      <HintPath>..\..\packages\PInvoke.SHCore.0.3.138-gb44b707375\lib\net40\PInvoke.SHCore.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PInvoke.User32, Version=0.3.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\PInvoke.User32.0.3.115\lib\net40\PInvoke.User32.dll</HintPath>
+      <HintPath>..\..\packages\PInvoke.User32.0.3.138-gb44b707375\lib\net40\PInvoke.User32.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PInvoke.Windows.Core, Version=0.3.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\PInvoke.Windows.Core.0.3.115\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\PInvoke.Windows.Core.dll</HintPath>
+      <HintPath>..\..\packages\PInvoke.Windows.Core.0.3.138-gb44b707375\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\PInvoke.Windows.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PInvoke.Windows.ShellScalingApi, Version=0.3.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\PInvoke.Windows.ShellScalingApi.0.3.115\lib\net40\PInvoke.Windows.ShellScalingApi.dll</HintPath>
+      <HintPath>..\..\packages\PInvoke.Windows.ShellScalingApi.0.3.138-gb44b707375\lib\net40\PInvoke.Windows.ShellScalingApi.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -71,62 +75,31 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DisplayApi\ANIMATIONINFO.cs" />
-    <Compile Include="DisplayApi\ClassStyles.cs" />
-    <Compile Include="DisplayApi\DeviceCap.cs" />
-    <Compile Include="DisplayApi\DeviceContextValues.cs" />
     <Compile Include="DisplayApi\DeviceDescriptionUnion.cs" />
     <Compile Include="DisplayApi\DeviceFlagsUnion.cs" />
     <Compile Include="DisplayApi\DEVMOD.cs" />
     <Compile Include="DisplayApi\DisplayApi.cs" />
     <Compile Include="DisplayApi\DisplayData.cs" />
     <Compile Include="DisplayApi\DisplayInfo.cs" />
-    <Compile Include="DisplayApi\DRAWTEXTPARAMS.cs" />
-    <Compile Include="DwmApi.cs" />
-    <Compile Include="DisplayApi\DWMWINDOWATTRIBUTE.cs" />
-    <Compile Include="Gdi32.cs" />
     <Compile Include="HelloWin.cs" />
-    <Compile Include="DisplayApi\HELPINFO.cs" />
     <Compile Include="DisplayApi\IDC_STANDARD_CURSORS.cs" />
     <Compile Include="DisplayApi\LOGFONT.cs" />
-    <Compile Include="DisplayApi\MessageBoxOptions.cs" />
-    <Compile Include="DisplayApi\MessageBoxResult.cs" />
     <Compile Include="DisplayApi\MinimizedMetrics.cs" />
     <Compile Include="DisplayApi\MinimizedMetricsArrangement.cs" />
-    <Compile Include="DisplayApi\MonitorEnumDelegate.cs" />
-    <Compile Include="DisplayApi\MONITORINFO.cs" />
-    <Compile Include="DisplayApi\MONITORINFOEX.cs" />
-    <Compile Include="DisplayApi\MonitorOptions.cs" />
-    <Compile Include="DisplayApi\MSG.cs" />
-    <Compile Include="DisplayApi\MsgBoxCallback.cs" />
-    <Compile Include="DisplayApi\MSGBOXPARAMS.cs" />
     <Compile Include="DisplayApi\NONCLIENTMETRICS.cs" />
-    <Compile Include="DisplayApi\PAINTSTRUCT.cs" />
     <Compile Include="DisplayApi\POINTL.cs" />
     <Compile Include="DisplayApi\PrintData.cs" />
     <Compile Include="DisplayApi\QueryDisplayConfig.cs" />
-    <Compile Include="DisplayApi\RectStructure.cs" />
     <Compile Include="DisplayApi\ScaleFactors.cs" />
     <Compile Include="DisplayApi\SetWindowPosFlags.cs" />
     <Compile Include="DisplayApi\ShowWindowCommands.cs" />
     <Compile Include="DisplayApi\SizeMessages.cs" />
     <Compile Include="DisplayApi\SpecialWindowhandles.cs" />
-    <Compile Include="DisplayApi\SPI.cs" />
-    <Compile Include="DisplayApi\SPIF.cs" />
-    <Compile Include="DisplayApi\StockObjects.cs" />
     <Compile Include="DisplayApi\SystemIcons.cs" />
-    <Compile Include="DisplayApi\SystemMetric.cs" />
-    <Compile Include="DisplayApi\TextFormats.cs" />
-    <Compile Include="DisplayApi\WindowFromPointFlags.cs" />
-    <Compile Include="DisplayApi\WINDOWINFO.cs" />
     <Compile Include="DisplayApi\WINDOWPLACEMENT.cs" />
     <Compile Include="DisplayApi\WindowShowStyles.cs" />
-    <Compile Include="DisplayApi\WindowStyles.cs" />
-    <Compile Include="DisplayApi\WindowStylesEx.cs" />
     <Compile Include="DisplayApi\WINMAXINFO.cs" />
-    <Compile Include="DisplayApi\WNDCLASS.cs" />
-    <Compile Include="DisplayApi\WNDCLASSEX.cs" />
     <Compile Include="User32.cs" />
-    <Compile Include="WndProc.cs" />
     <Compile Include="MyPInvoke.cs" />
     <Compile Include="OleApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

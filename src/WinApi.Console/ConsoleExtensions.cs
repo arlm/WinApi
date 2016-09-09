@@ -87,8 +87,8 @@ namespace WinApi.Console
 
             System.Console.CancelKeyPress += Console_CancelKeyPress;
 
-            consoleCtrlHandler = new PHANDLER_ROUTINE(Console_CtrlEvent);
-            PInvoke.User32.SetConsoleCtrlHandler(consoleCtrlHandler, true);
+            //consoleCtrlHandler = new PHANDLER_ROUTINE(Console_CtrlEvent);
+            //PInvoke.Kernel32.SetConsoleCtrlHandler(consoleCtrlHandler, true);
 
             SystemEvents.EventsThreadShutdown += SystemEvents_EventsThreadShutdown;
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
@@ -573,8 +573,8 @@ namespace WinApi.Console
             SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
             SystemEvents.EventsThreadShutdown -= SystemEvents_EventsThreadShutdown;
 
-            PInvoke.User32.SetConsoleCtrlHandler(consoleCtrlHandler, false);
-            consoleCtrlHandler = null;
+            //PInvoke.User32.SetConsoleCtrlHandler(consoleCtrlHandler, false);
+            //consoleCtrlHandler = null;
 
             System.Console.CancelKeyPress -= Console_CancelKeyPress;
 

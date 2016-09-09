@@ -26,10 +26,10 @@ namespace Sandbox
         /// <summary>
         /// <see cref="UnmanagedType.ByValTStr"/> means that the string should be marshaled as an
         /// array of TCHAR embedded in the structure. This implies that the font names can be no
-        /// larger than <see cref="User32.LF_FACESIZE"/> including the terminating '\0'. That works out to
+        /// larger than <see cref="PInvoke.User32.LF_FACESIZE"/> including the terminating '\0'. That works out to
         /// 31 characters.
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = User32.LF_FACESIZE)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = PInvoke.User32.LF_FACESIZE)]
         public string lfFaceName;
 
         // to shut it up about the warnings

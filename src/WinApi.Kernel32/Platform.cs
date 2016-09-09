@@ -35,51 +35,53 @@ namespace WinApi.Kernel32
         {
             bool isWow64 = false;
 
-            try
-            {
-                if ((Environment.OSVersion.Version.Major == 5 && Environment.OSVersion.Version.Minor >= 1) ||
-                      Environment.OSVersion.Version.Major > 5)
-                {
-                    using (var moduleHandle = PInvoke.Kernel32.GetModuleHandle("Kernel32.dll"))
-                    {
-                        if (!moduleHandle.IsInvalid)
-                        {
-                            var proc = PInvoke.Kernel32.GetProcAddress(moduleHandle, "IsWow64Process");
+            //    try
+            //    {
+            //        if ((Environment.OSVersion.Version.Major == 5 && Environment.OSVersion.Version.Minor >= 1) ||
+            //              Environment.OSVersion.Version.Major > 5)
+            //        {
+            //            using (var moduleHandle = PInvoke.Kernel32.GetModuleHandle("Kernel32.dll"))
+            //            {
+            //                if (!moduleHandle.IsInvalid)
+            //                {
+            //                    var proc = PInvoke.Kernel32.GetProcAddress(moduleHandle, "IsWow64Process");
 
-                            if (proc != IntPtr.Zero)
-                            {
-                                IntPtr process = IntPtr.Zero;
+            //                    if (proc != IntPtr.Zero)
+            //                    {
+            //                        IntPtr process = IntPtr.Zero;
 
-                                if (hProcess == null || hProcess.IsInvalid || hProcess.IsClosed || hProcess == PInvoke.Kernel32.SafeObjectHandle.Null)
-                                {
-                                    process = Process.GetCurrentProcess().Handle;
-                                }
+            //                        if (hProcess == null || hProcess.IsInvalid || hProcess.IsClosed || hProcess == PInvoke.Kernel32.SafeObjectHandle.Null)
+            //                        {
+            //                            process = Process.GetCurrentProcess().Handle;
+            //                        }
 
-                                var processHandle = process == IntPtr.Zero ? new PInvoke.Kernel32.SafeObjectHandle(process, true) : hProcess;
+            //                        var processHandle = process == IntPtr.Zero ? new PInvoke.Kernel32.SafeObjectHandle(process, true) : hProcess;
 
-                                isWow64 = PInvoke.Kernel32.IsWow64Process(processHandle);
+            //                        isWow64 = PInvoke.Kernel32.IsWow64Process(processHandle);
 
-                                if (process == IntPtr.Zero)
-                                {
-                                    processHandle.Close();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-            }
+            //                        if (process == IntPtr.Zero)
+            //                        {
+            //                            processHandle.Close();
+            //                        }
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+            //    catch (Exception)
+            //    {
+            //    }
 
-            if (IntPtr.Size == 8 || (IntPtr.Size == 4 && isWow64))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            //    if (IntPtr.Size == 8 || (IntPtr.Size == 4 && isWow64))
+            //    {
+            //        return true;
+            //    }
+            //    else
+            //    {
+            //        return false;
+            //    }
+
+            return isWow64;
         }
     }
 }
