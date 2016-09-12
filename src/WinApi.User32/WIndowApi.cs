@@ -73,7 +73,7 @@ namespace WinApi.User32
 
         public static IntPtr WindowFromPhysicalPoint(int physicalX, int physicalY)
         {
-            var ps = new POINT
+            var ps = new PInvoke.POINT
             {
                 x = physicalX,
                 y = physicalY

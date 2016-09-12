@@ -69,7 +69,6 @@
     <None Include="..\WinApi.licenseheader">
       <Link>WinApi.licenseheader</Link>
     </None>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -62,7 +62,7 @@ namespace WinApi.Kernel32
         /// handle table is full (256 max currently). Note Win32Exception is a subclass of
         /// ExternalException so this is OK in the documented Clipboard interface.
         /// </exception>
-        internal static IntPtr CopyToMoveableMemory(byte[] data)
+        internal static unsafe IntPtr CopyToMoveableMemory(byte[] data)
         {
             // detect this before GlobalAlloc does.
             if (data == null || data.Length == 0)
@@ -71,25 +71,25 @@ namespace WinApi.Kernel32
             }
 
             var hmem = PInvoke.Kernel32.GlobalAlloc(
-                PInvoke.Kernel32.GlobalAllocFlags.GMEM_MOVEABLE | PInvoke.Kernel32.GlobalAllocFlags.GMEM_DDESHARE, new IntPtr(unchecked((uint)data.Length)));
+                PInvoke.Kernel32.GlobalAllocFlags.GMEM_MOVEABLE | PInvoke.Kernel32.GlobalAllocFlags.GMEM_DDESHARE, new IntPtr(data.Length));
 
-            if (hmem == IntPtr.Zero)
+            if (hmem == null)
             {
                 throw new PInvoke.Win32Exception();
             }
 
-            IntPtr hmem_ptr = PInvoke.Kernel32.GlobalLock(hmem);
+            var hmem_ptr = PInvoke.Kernel32.GlobalLock(hmem);
 
             // If the allocation was valid this shouldn't occur.
-            if (hmem_ptr == IntPtr.Zero)
+            if (hmem_ptr == null)
             {
                 throw new PInvoke.Win32Exception();
             }
 
-            Marshal.Copy(data, 0, hmem_ptr, data.Length);
+            Marshal.Copy(data, 0, new IntPtr(hmem_ptr), data.Length);
             PInvoke.Kernel32.GlobalUnlock(hmem);
 
-            return hmem;
+            return new IntPtr(hmem);
         }
 
         internal static IntPtr CopyToMoveableMemory(string data)
