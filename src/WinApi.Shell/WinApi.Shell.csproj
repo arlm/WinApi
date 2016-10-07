@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaskBarProgress.cs" />
+    <Compile Include="TaskbarStates.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\WinApi.licenseheader">

@@ -12,15 +12,6 @@ namespace WinApi.Shell
 
         private static bool taskbarSupported = Environment.OSVersion.Version >= new Version(6, 1);
 
-        public enum TaskbarStates
-        {
-            NoProgress = 0,
-            Indeterminate = 0x1,
-            Normal = 0x2,
-            Error = 0x4,
-            Paused = 0x8
-        }
-
         [ComImport]
         [Guid("ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf")]
         [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -47,14 +38,14 @@ namespace WinApi.Shell
             void SetActiveAlt(IntPtr hwnd);
 
             [PreserveSig]
-            void SetProgressState(IntPtr hwnd, TaskbarStates state);
+            void SetProgressState(IntPtr hwnd, TaskbarState state);
 
             // ITaskbarList3
             [PreserveSig]
             void SetProgressValue(IntPtr hwnd, ulong ullCompleted, ulong ullTotal);
         }
 
-        public static void SetState(IntPtr windowHandle, TaskbarStates taskbarState)
+        public static void SetState(IntPtr windowHandle, TaskbarState taskbarState)
         {
             if (taskbarSupported)
                 taskbarInstance.SetProgressState(windowHandle, taskbarState);

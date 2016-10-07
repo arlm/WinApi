@@ -12,15 +12,15 @@ namespace WinApi.Console
         {
         }
 
-        public UnhandledExceptionEventArgs(System.UnhandledExceptionEventArgs e) : base(e.ExceptionObject, e.IsTerminating)
+        public UnhandledExceptionEventArgs(System.UnhandledExceptionEventArgs e) : base(e?.ExceptionObject, e?.IsTerminating ?? false)
         {
         }
 
-        public UnhandledExceptionEventArgs(UnobservedTaskExceptionEventArgs e) : base(e.Exception.Flatten(), !e.Observed)
+        public UnhandledExceptionEventArgs(UnobservedTaskExceptionEventArgs e) : base(e?.Exception.Flatten(), !e?.Observed ?? false)
         {
         }
 
-        public UnhandledExceptionEventArgs(FirstChanceExceptionEventArgs e) : base(e.Exception, false)
+        public UnhandledExceptionEventArgs(FirstChanceExceptionEventArgs e) : base(e?.Exception, false)
         {
         }
 

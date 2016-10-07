@@ -9,10 +9,10 @@ namespace WinApi.PeCoff
         public IMAGE_DATA_DIRECTORY CodeManagerTable;
         public uint EntryPointToken;
         public IMAGE_DATA_DIRECTORY ExportAddressTableJumps;
-        public uint Flags;
+        public uint ImageSettings;
         public ushort MajorRuntimeVersion;
         public IMAGE_DATA_DIRECTORY ManagedNativeHeader;
-        public IMAGE_DATA_DIRECTORY MetaData;
+        public IMAGE_DATA_DIRECTORY Metadata;
         public ushort MinorRuntimeVersion;
         public IMAGE_DATA_DIRECTORY Resources;
         public IMAGE_DATA_DIRECTORY StrongNameSignature;

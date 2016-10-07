@@ -9,12 +9,12 @@ namespace WinApi.PeCoff
     public static class PeCoffFiles
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-        public static PECOFF GetDllMachineType(string dllPath)
+        public static PeCoffStructure GetDllMachineType(string dllPath)
         {
             // See http://www.microsoft.com/whdc/system/platform/firmware/PECOFF.mspx Offset to PE
             // header is always at 0x3C. The PE header starts with "PE\0\0" = 0x50 0x45 0x00 0x00,
             // followed by a 2-byte machine type field (see the document above for the enum).
-            var result = PECOFF.Empty;
+            var result = PeCoffStructure.Empty;
 
             FileStream stream = null;
             try
@@ -55,7 +55,7 @@ namespace WinApi.PeCoff
                     result.PointerToSymbolTable = reader.ReadUInt32();
                     result.NumberOfSymbols = reader.ReadUInt32();
                     result.SizeOfOptionalHeader = reader.ReadUInt16();
-                    result.Characteristics = (CharacteristicsFlags)reader.ReadUInt16();
+                    result.Characteristics = (Characteristics)reader.ReadUInt16();
 
                     // Now we are at the end of the PE Header and from here, the PE Optional Headers
                     // starts... Read PE magic number from Standard Fields to determine format.
@@ -91,6 +91,7 @@ namespace WinApi.PeCoff
         }
 
         // Returns true if the dll is Managed, false if it is native, and null if unknown
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This method should not throw exceptions")]
         public static bool? Is32BitManagedDll(string dllPath)
         {
             try
@@ -103,7 +104,7 @@ namespace WinApi.PeCoff
                     return false;
                 }
 
-                return pe.PEFormat == PEType.PE32 && !pe.Characteristics.HasFlag(CharacteristicsFlags.IMAGE_FILE_32BIT_MACHINE);
+                return pe.PEFormat == PEType.PE32 && !pe.Characteristics.HasFlag(Characteristics.IMAGE_FILE_32BIT_MACHINE);
             }
 #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
             catch
@@ -115,6 +116,7 @@ namespace WinApi.PeCoff
         }
 
         // Returns true if the dll is Managed, false if it is native, and null if unknown
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This method should not throw exceptions")]
         public static bool? Is64BitManagedDll(string dllPath)
         {
             try
@@ -126,7 +128,7 @@ namespace WinApi.PeCoff
                 {
                     return false;
                 }
-                return pe.PEFormat == PEType.PE32Plus && !pe.Characteristics.HasFlag(CharacteristicsFlags.IMAGE_FILE_32BIT_MACHINE);
+                return pe.PEFormat == PEType.PE32Plus && !pe.Characteristics.HasFlag(Characteristics.IMAGE_FILE_32BIT_MACHINE);
             }
 #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
             catch
@@ -138,6 +140,7 @@ namespace WinApi.PeCoff
         }
 
         // Returns true if the dll is Managed, false if it is native, and null if unknown
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This method should not throw exceptions")]
         public static bool? IsAnyCPUManagedDll(string dllPath)
         {
             try
@@ -149,7 +152,7 @@ namespace WinApi.PeCoff
                 {
                     return false;
                 }
-                return pe.PEFormat == PEType.PE32 && !pe.Characteristics.HasFlag(CharacteristicsFlags.IMAGE_FILE_32BIT_MACHINE);
+                return pe.PEFormat == PEType.PE32 && !pe.Characteristics.HasFlag(Characteristics.IMAGE_FILE_32BIT_MACHINE);
             }
 #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
             catch
@@ -161,6 +164,7 @@ namespace WinApi.PeCoff
         }
 
         // Returns true if the dll is Managed, false if it is native, and null if unknown
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This method should not throw exceptions")]
         public static bool? IsManagedDll(string dllPath)
         {
             try
@@ -180,6 +184,7 @@ namespace WinApi.PeCoff
         }
 
         // Returns true if the dll is 64-bit, false if 32-bit, and null if unknown
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This method should not throw exceptions")]
         public static bool? IsUnmanagedDll64Bit(string dllPath)
         {
             try

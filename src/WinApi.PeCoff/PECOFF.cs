@@ -5,10 +5,10 @@ using System;
 
 namespace WinApi.PeCoff
 {
-    public struct PECOFF
+    public struct PeCoffStructure
     {
-        public static readonly PECOFF Empty = Initialize();
-        public CharacteristicsFlags Characteristics;
+        public static readonly PeCoffStructure Empty = Initialize();
+        public Characteristics Characteristics;
         public uint[] DataDictionaryRVA;
         public uint[] DataDictionarySize;
         public MachineType Machine;
@@ -19,9 +19,9 @@ namespace WinApi.PeCoff
         public ushort SizeOfOptionalHeader;
         public DateTime TimeDateStamp;
 
-        public static PECOFF Initialize()
+        public static PeCoffStructure Initialize()
         {
-            var result = new PECOFF();
+            var result = new PeCoffStructure();
             result.DataDictionaryRVA = new uint[16];
             result.DataDictionarySize = new uint[16];
             return result;

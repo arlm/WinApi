@@ -20,7 +20,7 @@ namespace WinApi.User32
             return unchecked((short)CoreExtensions.GetHiWord(wParam));
         }
 
-        public static void SendMouseInput(MOUSEEVENTF flags, int data, int dx = 0, int dy = 0)
+        public static void SendMouseInput(MOUSEEVENTF mouseEvent, int data, int dx = 0, int dy = 0)
         {
             INPUT[] input = { new INPUT() };
 
@@ -28,7 +28,7 @@ namespace WinApi.User32
             var mi = new MOUSEINPUT();
             mi.dx = dx;
             mi.dy = dy;
-            mi.dwFlags = flags;
+            mi.dwFlags = mouseEvent;
             mi.time = 0;
             mi.dwExtraInfo_IntPtr = IntPtr.Zero;
             mi.mouseData = unchecked((uint)data);

@@ -5,6 +5,8 @@ namespace WinApi.PeCoff
 {
     public enum PEType : ushort
     {
+        None = 0,
+
         /// <summary>
         /// ROM Image
         /// </summary>

@@ -6,7 +6,7 @@ using System;
 namespace WinApi.PeCoff
 {
     [Flags]
-    public enum CharacteristicsFlags : ushort
+    public enum Characteristics : ushort
     {
         /// <summary>
         /// Image only, Windows CE, and Microsoft Windows NT® and later. This indicates that the
@@ -53,6 +53,7 @@ namespace WinApi.PeCoff
         /// <summary>
         /// This flag is reserved for future use.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1700:DoNotNameEnumValuesReserved")]
         Reserved = 0x0040,
 
         /// <summary>

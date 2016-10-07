@@ -60,11 +60,11 @@ namespace WinApi.HighDpi
         /// applications expect to have at least 720 effective lines of resolution (that is, the physical vertical resolution of the display divided by the scale factor);
         /// this can further limit the range of allowed display scale factors.
         /// </remarks>
-        public static ScaleFactors DesktopDPIOverrideScaleFactor
+        public static ScaleFactor DesktopDPIOverrideScaleFactor
         {
             get
             {
-                var possibleValues = Enum.GetValues(typeof(ScaleFactors)).Cast<ScaleFactors>().ToArray();
+                var possibleValues = Enum.GetValues(typeof(ScaleFactor)).Cast<ScaleFactor>().ToArray();
                 var defaultValue = 0;
 
                 return possibleValues[defaultValue + DesktopDPIOverride];
@@ -97,6 +97,7 @@ namespace WinApi.HighDpi
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Properties should not throw exceptions")]
         public static Dpi SystemDPI
         {
             get
@@ -278,6 +279,7 @@ namespace WinApi.HighDpi
             return GetProcessDpiAwareness(IntPtr.Zero);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Try* methods should not throw exceptions")]
         public static unsafe int TryLogicalMonitorScaleFactor(IntPtr hwndMonitor)
         {
             try
@@ -313,14 +315,14 @@ namespace WinApi.HighDpi
         /// <param name="scalingFactor">The desired scaling factor to override current configuration</param>
         /// <returns>Returns true if the system is overriding the scaling factor, false otherwise</returns>
         /// <remarks>Requires logoff/logon to enable the new settings</remarks>
-        public static bool OverrideScalingFactor(ScaleFactors scalingFactor)
+        public static bool OverrideScalingFactor(ScaleFactor scalingFactor)
         {
             if (HasPerMonitorDpiSupport)
             {
                 // If(verticalResolution < 1080) and (DPI == 125 %)
                 var result = true;
 
-                if (scalingFactor == ScaleFactors.NotAvailable)
+                if (scalingFactor == HighDpi.ScaleFactor.NotAvailable)
                 {
                     return false;
                 }
@@ -336,7 +338,7 @@ namespace WinApi.HighDpi
             return false;
         }
 
-        public static bool RegisterAsDpiAware(bool perMonitorAwareness = true, bool fallBackToSystemAwareness = true)
+        public static bool RegisterAsDpiAware(bool perMonitorAwareness = true, bool fallbackToSystemAwareness = true)
         {
             if (HasPerMonitorDpiSupport)
             {
@@ -347,12 +349,12 @@ namespace WinApi.HighDpi
                     return true;
                 }
 
-                if (fallBackToSystemAwareness)
+                if (fallbackToSystemAwareness)
                 {
                     return User32.SetProcessDPIAware();
                 }
             }
-            else if (fallBackToSystemAwareness)
+            else if (fallbackToSystemAwareness)
             {
                 return User32.SetProcessDPIAware();
             }

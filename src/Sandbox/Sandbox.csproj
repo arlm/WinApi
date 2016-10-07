@@ -80,6 +80,7 @@
     <Compile Include="DisplayApi\DEVMOD.cs" />
     <Compile Include="DisplayApi\DisplayApi.cs" />
     <Compile Include="DisplayApi\DisplayData.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HelloWin.cs" />
     <Compile Include="DisplayApi\IDC_STANDARD_CURSORS.cs" />
     <Compile Include="DisplayApi\LOGFONT.cs" />

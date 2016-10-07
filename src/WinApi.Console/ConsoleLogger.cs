@@ -7,7 +7,7 @@ using System.IO;
 
 namespace WinApi.Console
 {
-    public class ConsoleLogger : IDisposable
+    public sealed class ConsoleLogger : IDisposable
     {
         /// <summary>
         /// Implements IDisposable so we implement IDisposable, too!
@@ -17,20 +17,10 @@ namespace WinApi.Console
         /// <summary>
         /// Creates a new instance of Logger.
         /// </summary>
-        /// <param name="filename">File to log to.</param>
-        public ConsoleLogger(string filename)
+        /// <param name="fileName">File to log to.</param>
+        public ConsoleLogger(string fileName)
         {
-            writer = new StreamWriter(filename);
-        }
-
-        /// <summary>
-        /// Finalizer
-        /// </summary>
-        ~ConsoleLogger()
-        {
-            // We should never get into this point. Getting here is an error of the developer!
-            Debug.WriteLine("Error - we forgot to dispose {0}", GetType().FullName);
-            Dispose(false);
+            writer = new StreamWriter(fileName);
         }
 
         /// <summary>
@@ -46,25 +36,7 @@ namespace WinApi.Console
         /// </summary>
         public void Dispose()
         {
-            // Do a full dispose
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            writer.Close();
         }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            // Call base class
-            //base.Dispose(disposing);
-
-            if (disposing)
-            {
-                // Dispose managed stuff
-                writer?.Close();
-            }
-
-            // Dispose unmanaged stuff.
-        }
-
-        // Some usefull methods are required here to write log messages.
     }
 }

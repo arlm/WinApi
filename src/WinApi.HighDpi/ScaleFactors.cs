@@ -3,7 +3,7 @@
 
 namespace WinApi.HighDpi
 {
-    public enum ScaleFactors
+    public enum ScaleFactor
     {
         /// <summary>
         /// Scaling is not available or supported

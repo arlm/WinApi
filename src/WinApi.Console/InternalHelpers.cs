@@ -49,22 +49,6 @@ namespace WinApi.Console
             return attributes;
         }
 
-        public static string GetMetaData(this Assembly assembly, string key)
-        {
-            if (string.IsNullOrWhiteSpace(key))
-            {
-                throw new ArgumentNullException(nameof(key));
-            }
-
-            var attributes = GetAttributes<AssemblyMetadataAttribute>(assembly);
-
-            var values = from item in attributes
-                         where item.Key == key
-                         select item.Value;
-
-            return values.FirstOrDefault();
-        }
-
         public static Process Parent(this Process process)
         {
             return FindPidFromIndexedProcessName(FindIndexedProcessName(process.Id));
@@ -105,10 +89,12 @@ namespace WinApi.Console
             for (var index = 0; index < processesByName.Length; index++)
             {
                 processIndexdName = index == 0 ? processName : processName + "#" + index;
-                var processId = new PerformanceCounter("Process", "ID Process", processIndexdName);
-                if ((int)processId.NextValue() == pid)
+                using (var processId = new PerformanceCounter("Process", "ID Process", processIndexdName))
                 {
-                    return processIndexdName;
+                    if ((int)processId.NextValue() == pid)
+                    {
+                        return processIndexdName;
+                    }
                 }
             }
 
@@ -117,9 +103,11 @@ namespace WinApi.Console
 
         private static Process FindPidFromIndexedProcessName(string indexedProcessName)
         {
-            var parentId = new PerformanceCounter("Process", "Creating Process ID", indexedProcessName);
-
-            var processId = (int)parentId.NextValue();
+            int processId;
+            using (var parentId = new PerformanceCounter("Process", "Creating Process ID", indexedProcessName))
+            {
+                processId = (int)parentId.NextValue();
+            }
 
             return processId == 0 ? null : Process.GetProcessById(processId);
         }

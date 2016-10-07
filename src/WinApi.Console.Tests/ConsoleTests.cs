@@ -82,6 +82,7 @@ namespace WinApi.Console
         /// <see cref="AccessViolationException"/> object, and EXCEPTION_STACK_OVERFLOW, which
         /// is converted to a <see cref="StackOverflowException"/> object.
         /// </remarks>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This method should not throw exceptions")]
         [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
         [DebuggerStepThrough]
@@ -122,6 +123,7 @@ namespace WinApi.Console
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This method should not throw exceptions")]
         [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
         [DebuggerStepThrough]
@@ -155,6 +157,7 @@ namespace WinApi.Console
             nullTest.Contains("null");
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This method should not throw exceptions")]
         [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
         [DebuggerStepThrough]

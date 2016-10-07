@@ -33,6 +33,7 @@ namespace WinApi.Kernel32
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This method should not throw exceptions")]
         public static bool Is64Bit(SafeObjectHandle hProcess = null)
         {
             bool isWow64 = false;
@@ -50,20 +51,18 @@ namespace WinApi.Kernel32
 
                             if (proc != IntPtr.Zero)
                             {
-                                IntPtr process = IntPtr.Zero;
-
                                 if (hProcess == null || hProcess.IsInvalid || hProcess.IsClosed || hProcess == SafeObjectHandle.Null)
                                 {
-                                    process = Process.GetCurrentProcess().Handle;
+                                    var process = Process.GetCurrentProcess().Handle;
+
+                                    using (var processHandle = new SafeObjectHandle(process, true))
+                                    {
+                                        isWow64 = IsWow64Process(processHandle);
+                                    }
                                 }
-
-                                var processHandle = process == IntPtr.Zero ? new SafeObjectHandle(process, true) : hProcess;
-
-                                isWow64 = IsWow64Process(processHandle);
-
-                                if (process == IntPtr.Zero)
+                                else
                                 {
-                                    processHandle.Close();
+                                    isWow64 = IsWow64Process(hProcess);
                                 }
                             }
                         }

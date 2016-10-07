@@ -310,6 +310,7 @@ namespace WinApi.Console
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Global exception handlers should not throw exceptions")]
         [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
         private static void AppDomain_FirstChanceException(object sender, FirstChanceExceptionEventArgs e)
@@ -351,6 +352,7 @@ namespace WinApi.Console
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Should not throw exceptions when the AppDomain process exits")]
         private static void AppDomain_ProcessExit(object sender, EventArgs e)
         {
             if (!hasHandledOnExit)
@@ -386,6 +388,7 @@ namespace WinApi.Console
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Global exception handlers should not throw exceptions")]
         [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
         private static void AppDomain_UnhandledException(object sender, System.UnhandledExceptionEventArgs e)
@@ -428,8 +431,9 @@ namespace WinApi.Console
                 Dispose();
                 Environment.Exit(args.ExitCode);
             }
-        }    
+        }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Should not throw exceptions during CancelKeyPress handler")]
         private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
             hasFaulted = true;
@@ -462,6 +466,7 @@ namespace WinApi.Console
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Should not throw exceptions during CtrlEvent handler")]
         private static bool Console_CtrlEvent(Kernel32.ControlType sig)
         {
             hasFaulted = true;
@@ -558,6 +563,7 @@ namespace WinApi.Console
             System.Console.Out.WriteLine(Environment.NewLine);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Should not throw exceptions during Process.Disposed handler")]
         private static void Process_Disposed(object sender, EventArgs e)
         {
             if (!hasHandledOnExit)
@@ -590,6 +596,7 @@ namespace WinApi.Console
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Should not throw exceptions during Process.Exited handler")]
         private static void Process_Exited(object sender, EventArgs e)
         {
             if (!hasHandledOnExit)
@@ -647,6 +654,7 @@ namespace WinApi.Console
             Dispose();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Global exception handlers should not throw exceptions")]
         [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
         private static void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
