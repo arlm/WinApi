@@ -114,7 +114,9 @@ namespace WinApi.HighDpi
                         dpi.Y = Gdi32.GetDeviceCaps(desktopDC, Gdi32.DeviceCap.LOGPIXELSY);
                     }
                 }
-                catch (Exception)
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+                catch
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
                 {
                 }
                 finally
@@ -276,25 +278,31 @@ namespace WinApi.HighDpi
             return GetProcessDpiAwareness(IntPtr.Zero);
         }
 
-        public static unsafe int LogicalMonitorScaleFactor(IntPtr hwndMonitor)
+        public static unsafe int TryLogicalMonitorScaleFactor(IntPtr hwndMonitor)
         {
             try
             {
+                return LogicalMonitorScaleFactor(hwndMonitor);
+            }
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+            catch
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
+            {
+            }
+
+            return 0;
+        }
+
+        public static unsafe int LogicalMonitorScaleFactor(IntPtr hwndMonitor)
+        {
                 var monitorInfo = User32.MONITORINFOEX.Create();
                 if (User32.GetMonitorInfo(hwndMonitor, new IntPtr(&monitorInfo)))
                 {
                     var logicalDesktopWidth = User32.GetSystemMetrics(User32.SystemMetric.SM_CXVIRTUALSCREEN);
                     int logicalMonitorWidth = monitorInfo.Monitor.right - monitorInfo.Monitor.left;
-                    //int pathArrayLength = 5;
 
-                    //var result = User32.QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, ref pathArrayLength, out pathArray, ref pathArrayLength, out pathArray, out topologyId);
-
-                    //return (logicalMonitorWidth / logicalDesktopWidth) / ()
+                return (logicalMonitorWidth / logicalDesktopWidth);
                 }
-            }
-            catch (Exception)
-            {
-            }
 
             return 0;
         }
@@ -332,13 +340,14 @@ namespace WinApi.HighDpi
         {
             if (HasPerMonitorDpiSupport)
             {
-                var result = SHCore.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
+                var result = SHCore.SetProcessDpiAwareness(perMonitorAwareness ? PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE : PROCESS_DPI_AWARENESS.PROCESS_SYSTEM_DPI_AWARE);
 
                 if (result.Succeeded)
                 {
                     return true;
                 }
-                else if (fallBackToSystemAwareness)
+
+                if (fallBackToSystemAwareness)
                 {
                     return User32.SetProcessDPIAware();
                 }
@@ -418,10 +427,5 @@ namespace WinApi.HighDpi
 
             return false;
         }
-
-        //static DpiAwareApi()
-        //{
-        //    RegisterAsDpiAware();
-        //}
     }
 }

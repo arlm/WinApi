@@ -4,68 +4,70 @@
 using System;
 using System.Runtime.InteropServices;
 
+using static PInvoke.User32;
+
 namespace WinApi.User32
 {
     public static class KeyboardInputApi
     {
-        public static void SendKeyDownInput(PInvoke.User32.VirtualKey vkKey)
+        public static void SendKeyDownInput(VirtualKey vkKey)
         {
-            PInvoke.User32.INPUT[] input = new[] { new PInvoke.User32.INPUT() };
+            INPUT[] input = { new INPUT() };
 
-            input[0].type = PInvoke.User32.InputType.INPUT_KEYBOARD;
-            var ki = new PInvoke.User32.KEYBDINPUT();
+            input[0].type = InputType.INPUT_KEYBOARD;
+            var ki = new KEYBDINPUT();
             ki.wVk = vkKey;
-            ki.wScan = PInvoke.User32.ScanCode.NONAME;
-            ki.dwFlags = /* User32.KEYEVENTF.KEYEVENTF_KEY_DOWN */ (PInvoke.User32.KEYEVENTF)0;
+            ki.wScan = ScanCode.NONAME;
+            ki.dwFlags = /* User32.KEYEVENTF.KEYEVENTF_KEY_DOWN */ 0;
             ki.time = 0;
             ki.dwExtraInfo_IntPtr = IntPtr.Zero;
             input[0].ki = ki;
-            var result = PInvoke.User32.SendInput(input.Length, input, Marshal.SizeOf(input[0].GetType()));
+            var result = SendInput(input.Length, input, Marshal.SizeOf(input[0].GetType()));
         }
 
-        public static void SendKeyDownInput(PInvoke.User32.ScanCode scanCode)
+        public static void SendKeyDownInput(ScanCode scanCode)
         {
-            PInvoke.User32.INPUT[] input = new[] { new PInvoke.User32.INPUT() };
+            INPUT[] input = { new INPUT() };
 
-            input[0].type = PInvoke.User32.InputType.INPUT_KEYBOARD;
-            var ki = new PInvoke.User32.KEYBDINPUT();
-            ki.wVk = PInvoke.User32.VirtualKey.VK_NO_KEY;
+            input[0].type = InputType.INPUT_KEYBOARD;
+            var ki = new KEYBDINPUT();
+            ki.wVk = VirtualKey.VK_NO_KEY;
             ki.wScan = scanCode;
-            ki.dwFlags = /*User32.KEYEVENTF.KEYEVENTF_KEY_DOWN |*/ PInvoke.User32.KEYEVENTF.KEYEVENTF_SCANCODE;
+            ki.dwFlags = /*User32.KEYEVENTF.KEYEVENTF_KEY_DOWN |*/ KEYEVENTF.KEYEVENTF_SCANCODE;
             ki.time = 0;
             ki.dwExtraInfo_IntPtr = IntPtr.Zero;
             input[0].ki = ki;
-            var result = PInvoke.User32.SendInput(input.Length, input, Marshal.SizeOf(input[0].GetType()));
+            var result = SendInput(input.Length, input, Marshal.SizeOf(input[0].GetType()));
         }
 
-        public static void SendKeyUpInput(PInvoke.User32.VirtualKey vkKey)
+        public static void SendKeyUpInput(VirtualKey vkKey)
         {
-            PInvoke.User32.INPUT[] input = new[] { new PInvoke.User32.INPUT() };
+            INPUT[] input = { new INPUT() };
 
-            input[0].type = PInvoke.User32.InputType.INPUT_KEYBOARD;
-            var ki = new PInvoke.User32.KEYBDINPUT();
+            input[0].type = InputType.INPUT_KEYBOARD;
+            var ki = new KEYBDINPUT();
             ki.wVk = vkKey;
-            ki.wScan = PInvoke.User32.ScanCode.NONAME;
-            ki.dwFlags = PInvoke.User32.KEYEVENTF.KEYEVENTF_KEYUP;
+            ki.wScan = ScanCode.NONAME;
+            ki.dwFlags = KEYEVENTF.KEYEVENTF_KEYUP;
             ki.time = 0;
             ki.dwExtraInfo_IntPtr = IntPtr.Zero;
             input[0].ki = ki;
-            var result = PInvoke.User32.SendInput(input.Length, input, Marshal.SizeOf(input[0].GetType()));
+            var result = SendInput(input.Length, input, Marshal.SizeOf(input[0].GetType()));
         }
 
-        public static void SendKeyUpInput(PInvoke.User32.ScanCode scanCode)
+        public static void SendKeyUpInput(ScanCode scanCode)
         {
-            PInvoke.User32.INPUT[] input = new[] { new PInvoke.User32.INPUT() };
+            INPUT[] input = { new INPUT() };
 
-            input[0].type = PInvoke.User32.InputType.INPUT_KEYBOARD;
-            var ki = new PInvoke.User32.KEYBDINPUT();
-            ki.wVk = PInvoke.User32.VirtualKey.VK_NO_KEY;
+            input[0].type = InputType.INPUT_KEYBOARD;
+            var ki = new KEYBDINPUT();
+            ki.wVk = VirtualKey.VK_NO_KEY;
             ki.wScan = scanCode;
-            ki.dwFlags = PInvoke.User32.KEYEVENTF.KEYEVENTF_KEYUP | PInvoke.User32.KEYEVENTF.KEYEVENTF_SCANCODE;
+            ki.dwFlags = KEYEVENTF.KEYEVENTF_KEYUP | KEYEVENTF.KEYEVENTF_SCANCODE;
             ki.time = 0;
             ki.dwExtraInfo_IntPtr = IntPtr.Zero;
             input[0].ki = ki;
-            var result = PInvoke.User32.SendInput(input.Length, input, Marshal.SizeOf(input[0].GetType()));
+            var result = SendInput(input.Length, input, Marshal.SizeOf(input[0].GetType()));
         }
     }
 }

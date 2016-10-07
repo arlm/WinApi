@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 
 using System;
+using static PInvoke.User32;
 
 namespace WinApi.User32
 {
@@ -54,16 +55,14 @@ namespace WinApi.User32
                 char* windowText = stackalloc char[length + 1];
                 int capacity = length + 1;
 
-                var result = PInvoke.User32.SendMessage(hwnd, PInvoke.User32.WindowMessage.WM_GETTEXT, &capacity, windowText);
+                var result = SendMessage(hwnd, PInvoke.User32.WindowMessage.WM_GETTEXT, &capacity, windowText);
 
                 if (result == IntPtr.Zero)
                 {
                     return string.Empty;
                 }
-                else
-                {
-                    return new string(windowText, 0, result.ToInt32());
-                }
+
+                return new string(windowText, 0, result.ToInt32());
             }
 
             /// <summary>
@@ -92,7 +91,7 @@ namespace WinApi.User32
             /// </remarks>
             public static int WM_GETTEXTLENGTH(IntPtr hwnd)
             {
-                return PInvoke.User32.SendMessage(hwnd, PInvoke.User32.WindowMessage.WM_GETTEXTLENGTH, IntPtr.Zero, IntPtr.Zero).ToInt32();
+                return SendMessage(hwnd, PInvoke.User32.WindowMessage.WM_GETTEXTLENGTH, IntPtr.Zero, IntPtr.Zero).ToInt32();
             }
         }
     }

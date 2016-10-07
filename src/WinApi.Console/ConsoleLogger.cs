@@ -12,7 +12,7 @@ namespace WinApi.Console
         /// <summary>
         /// Implements IDisposable so we implement IDisposable, too!
         /// </summary>
-        private StreamWriter _writer;
+        private readonly StreamWriter writer;
 
         /// <summary>
         /// Creates a new instance of Logger.
@@ -20,7 +20,7 @@ namespace WinApi.Console
         /// <param name="filename">File to log to.</param>
         public ConsoleLogger(string filename)
         {
-            _writer = new StreamWriter(filename);
+            writer = new StreamWriter(filename);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace WinApi.Console
             if (disposing)
             {
                 // Dispose managed stuff
-                _writer?.Close();
+                writer?.Close();
             }
 
             // Dispose unmanaged stuff.

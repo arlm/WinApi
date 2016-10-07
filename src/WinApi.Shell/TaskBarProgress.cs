@@ -21,7 +21,7 @@ namespace WinApi.Shell
             Paused = 0x8
         }
 
-        [ComImport()]
+        [ComImport]
         [Guid("ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf")]
         [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         private interface ITaskbarList3
@@ -66,9 +66,9 @@ namespace WinApi.Shell
                 taskbarInstance.SetProgressValue(windowHandle, (ulong)progressValue, (ulong)progressMax);
         }
 
+        [ComImport]
         [Guid("56FDF344-FD6D-11d0-958A-006097C9A090")]
         [ClassInterface(ClassInterfaceType.None)]
-        [ComImport()]
         private class TaskbarInstance
         {
         }

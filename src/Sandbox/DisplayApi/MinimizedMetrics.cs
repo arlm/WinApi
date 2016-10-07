@@ -8,14 +8,10 @@ namespace Sandbox
     [StructLayout(LayoutKind.Sequential)]
     public struct MinimizedMetrics
     {
-        #region Private Fields
-
         private uint cbSize;
         private MinimizedMetricsArrangement iArrange;
         private int iHorzGap;
         private int iVertGap;
         private int iWidth;
-
-        #endregion Private Fields
     }
 }

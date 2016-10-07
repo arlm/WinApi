@@ -10,6 +10,7 @@ using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Win32;
+using PInvoke;
 
 using ThreadState = System.Threading.ThreadState;
 
@@ -55,7 +56,7 @@ namespace WinApi.Console
         private const string WAIT_PROMPT = "\n\nPress any key to quit ...";
 
         private static readonly char[] spinner = { '-', '\\', '|', '/' };
-        private static PInvoke.Kernel32.PHANDLER_ROUTINE consoleCtrlHandler;
+        private static Kernel32.HandlerRoutine consoleCtrlHandler;
         private static volatile bool hasFaulted ;
         private static volatile bool hasHandledOnExit;
         private static bool isCapturingFirstChanceException;
@@ -87,8 +88,8 @@ namespace WinApi.Console
 
             System.Console.CancelKeyPress += Console_CancelKeyPress;
 
-            consoleCtrlHandler = new PInvoke.Kernel32.PHANDLER_ROUTINE(Console_CtrlEvent);
-            PInvoke.Kernel32.SetConsoleCtrlHandler(consoleCtrlHandler, true);
+            consoleCtrlHandler = new Kernel32.HandlerRoutine(Console_CtrlEvent);
+            Kernel32.SetConsoleCtrlHandler(consoleCtrlHandler, true);
 
             SystemEvents.EventsThreadShutdown += SystemEvents_EventsThreadShutdown;
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
@@ -103,90 +104,47 @@ namespace WinApi.Console
 
         /// Return Type: void
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate void Anonymous_a3debd67_ecba_49a0_9c67_1b83f463a375();
+        private delegate void atexit_function();
 
-        ///// <summary>
-        ///// The PHANDLER_ROUTINE type defines a pointer a callback function to handle control signals
-        ///// received by the process. When the signal is received, the system creates a new thread in
-        ///// the process to execute the function.
-        ///// <para>
-        ///// Because the system creates a new thread in the process to execute the handler function,
-        ///// it is possible that the handler function will be terminated by another thread in the
-        ///// process. Be sure to synchronize threads in the process with the thread for the handler function.
-        ///// </para>
-        ///// <para>
-        ///// Each console process has its own list of HandlerRoutine functions. Initially, this list
-        ///// contains only a default handler function that calls ExitProcess. A console process adds
-        ///// or removes additional handler functions by calling the SetConsoleCtrlHandler function,
-        ///// which does not affect the list of handler functions for other processes. When a console
-        ///// process receives any of the control signals, its handler functions are called on a
-        ///// last-registered, first-called basis until one of the handlers returns TRUE. If none of
-        ///// the handlers returns TRUE, the default handler is called.
-        ///// </para>
-        ///// </summary>
-        ///// <param name="dwCtrlType">
-        ///// The type of control signal received by the handler.
-        ///// <para>
-        ///// The CTRL_CLOSE_EVENT, CTRL_LOGOFF_EVENT, and CTRL_SHUTDOWN_EVENT signals give the process
-        ///// an opportunity to clean up before termination. A HandlerRoutine can perform any necessary
-        ///// cleanup, then take one of the following actions:
-        ///// <list>
-        ///// <item>Call the ExitProcess function to terminate the process</item>
-        ///// <item>
-        ///// Return FALSE.If none of the registered handler functions returns TRUE, the default
-        ///// handler terminates the process
-        ///// </item>
-        ///// <item>
-        ///// Return TRUE. In this case, no other handler functions are called and the system
-        ///// terminates the process
-        ///// </item>
-        ///// </list>
-        ///// </para>
-        ///// <para>
-        ///// A process can use the SetProcessShutdownParameters function to prevent the system from
-        ///// displaying a dialog box to the user during logoff or shutdown. In this case, the system
-        ///// terminates the process when HandlerRoutine returns TRUE or when the time-out period elapses.
-        ///// </para>
-        ///// </param>
-        ///// <returns>
-        ///// If the function handles the control signal, it should return TRUE. If it returns FALSE,
-        ///// the next handler function in the list of handlers for this process is used.
-        ///// </returns>
-        ///// <remarks>
-        ///// Note that a third-party library or DLL can install a console control handler for your
-        ///// application. If it does, this handler overrides the default handler, and can cause the
-        ///// application to exit when the user logs off.
-        ///// <para>
-        ///// Windows 7, Windows 8, Windows 8.1 and Windows 10: If a console application loads the
-        ///// gdi32.dll or user32.dll library, the HandlerRoutine function that you specify when you
-        ///// call SetConsoleCtrlHandler does not get called for the CTRL_LOGOFF_EVENT and
-        ///// CTRL_SHUTDOWN_EVENT events.
-        ///// </para>
-        ///// <para>
-        ///// The operating system recognizes processes that load gdi32.dll or user32.dll as Windows
-        ///// applications rather than console applications. This behavior also occurs for console
-        ///// applications that do not call functions in gdi32.dll or user32.dll directly, but do call
-        ///// functions such as Shell functions that do in turn call functions in gdi32.dll or user32.dll.
-        ///// </para>
-        ///// <para>
-        ///// To receive events when a user signs out or the device shuts down in these circumstances,
-        ///// create a hidden window in your console application, and then handle the
-        ///// WM_QUERYENDSESSION and WM_ENDSESSION window messages that the hidden window receives. You
-        ///// can create a hidden window by calling the CreateWindowEx method with the dwExStyle
-        ///// parameter set to 0.
-        ///// </para>
-        ///// <para>
-        ///// When a console application is run as a service, it receives a modified default console
-        ///// control handler. This modified handler does not call ExitProcess when processing the
-        ///// CTRL_LOGOFF_EVENT and CTRL_SHUTDOWN_EVENT signals. This allows the service to continue
-        ///// running after the user logs off. If the service installs its own console control handler,
-        ///// this handler is called before the default handler. If the installed handler calls
-        ///// ExitProcess when processing the CTRL_LOGOFF_EVENT signal, the service exits when the user
-        ///// logs off.
-        ///// </para>
-        ///// </remarks>
-        //[return: MarshalAs(UnmanagedType.Bool)]
-        //private delegate bool PHANDLER_ROUTINE(CtrlType dwCtrlType);
+        /// Return Type: int
+        ///param0: Anonymous_a3debd67_ecba_49a0_9c67_1b83f463a375
+        [DllImport("msvcr80.dll", EntryPoint = "atexit", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int atexit(atexit_function param0);
+
+        /// Return Type: terminate_function
+        [DllImport("msvcr80.dll", EntryPoint = "_get_terminate")]
+        private static extern terminate_function _get_terminate();
+
+        /// Return Type: unexpected_function
+        [DllImport("msvcr80.dll", EntryPoint = "_get_unexpected")]
+        private static extern unexpected_function _get_unexpected();
+
+        /// Return Type: _onexit_t
+        ///_Func: _onexit_t
+        [DllImport("msvcr80.dll", EntryPoint = "_onexit", CallingConvention = CallingConvention.Cdecl)]
+        private static extern _onexit_t _onexit(_onexit_t _Func);
+
+        /// Return Type: unsigned int
+        ///_Flags: unsigned int
+        ///_Mask: unsigned int
+        [DllImport("msvcr80.dll", EntryPoint = "_set_abort_behavior", CallingConvention = CallingConvention.Cdecl)]
+        private static extern uint _set_abort_behavior(uint _Flags, uint _Mask);
+
+        /// Return Type: void
+        ///param0: terminate_function
+        [DllImport("msvcr80.dll", EntryPoint = "set_terminate", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void set_terminate(terminate_function param0);
+
+        /// Return Type: void
+        ///param0: int
+        [DllImport("msvcr80.dll", EntryPoint = "set_unexpected", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void set_unexpected(int param0);
+
+        /// Return Type: int
+        ///sig: int
+        ///param1: signal_function
+        [DllImport("msvcr80.dll", EntryPoint = "signal", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int signal(int sig, signal_function param1);
 
         /// Return Type: void
         ///param0: int[]
@@ -352,25 +310,6 @@ namespace WinApi.Console
             }
         }
 
-        /// Return Type: terminate_function
-        [DllImport("msvcr80.dll", EntryPoint = "_get_terminate")]
-        private static extern terminate_function _get_terminate();
-
-        /// Return Type: unexpected_function
-        [DllImport("msvcr80.dll", EntryPoint = "_get_unexpected")]
-        private static extern unexpected_function _get_unexpected();
-
-        /// Return Type: _onexit_t
-        ///_Func: _onexit_t
-        [DllImport("msvcr80.dll", EntryPoint = "_onexit", CallingConvention = CallingConvention.Cdecl)]
-        private static extern _onexit_t _onexit(_onexit_t _Func);
-
-        /// Return Type: unsigned int
-        ///_Flags: unsigned int
-        ///_Mask: unsigned int
-        [DllImport("msvcr80.dll", EntryPoint = "_set_abort_behavior", CallingConvention = CallingConvention.Cdecl)]
-        private static extern uint _set_abort_behavior(uint _Flags, uint _Mask);
-
         [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
         private static void AppDomain_FirstChanceException(object sender, FirstChanceExceptionEventArgs e)
@@ -489,12 +428,7 @@ namespace WinApi.Console
                 Dispose();
                 Environment.Exit(args.ExitCode);
             }
-        }
-
-        /// Return Type: int
-        ///param0: Anonymous_a3debd67_ecba_49a0_9c67_1b83f463a375
-        [DllImport("msvcr80.dll", EntryPoint = "atexit", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int atexit(Anonymous_a3debd67_ecba_49a0_9c67_1b83f463a375 param0);
+        }    
 
         private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
@@ -528,7 +462,7 @@ namespace WinApi.Console
             }
         }
 
-        private static bool Console_CtrlEvent(PInvoke.Kernel32.ControlType sig)
+        private static bool Console_CtrlEvent(Kernel32.ControlType sig)
         {
             hasFaulted = true;
 
@@ -573,7 +507,7 @@ namespace WinApi.Console
             SystemEvents.PowerModeChanged -= SystemEvents_PowerModeChanged;
             SystemEvents.EventsThreadShutdown -= SystemEvents_EventsThreadShutdown;
 
-            PInvoke.Kernel32.SetConsoleCtrlHandler(consoleCtrlHandler, false);
+            Kernel32.SetConsoleCtrlHandler(consoleCtrlHandler, false);
             consoleCtrlHandler = null;
 
             System.Console.CancelKeyPress -= Console_CancelKeyPress;
@@ -688,22 +622,6 @@ namespace WinApi.Console
             }
         }
 
-        /// Return Type: void
-        ///param0: terminate_function
-        [DllImport("msvcr80.dll", EntryPoint = "set_terminate", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void set_terminate(terminate_function param0);
-
-        /// Return Type: void
-        ///param0: int
-        [DllImport("msvcr80.dll", EntryPoint = "set_unexpected", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void set_unexpected(int param0);
-
-        /// Return Type: int
-        ///sig: int
-        ///param1: signal_function
-        [DllImport("msvcr80.dll", EntryPoint = "signal", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int signal(int sig, signal_function param1);
-
         private static void SystemEvents_EventsThreadShutdown(object sender, EventArgs e)
         {
             Dispose();
@@ -781,205 +699,6 @@ namespace WinApi.Console
                 System.Console.Out.Write(marquee.PadRight(System.Console.BufferWidth));
                 spinnerPos = (spinnerPos >= 3) ? 0 : spinnerPos + 1;
             }
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct CHAR_INFO
-        {
-            /// Anonymous_f3630dcb_df39_4f30_a593_48e610e9363d
-            public EventCharacterUnion Char;
-
-            /// WORD->unsigned short
-            public ushort Attributes;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct CONSOLE_FONT_INFO
-        {
-            /// DWORD->unsigned int
-            public uint nFont;
-
-            /// COORD->_COORD
-            public COORD dwFontSize;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct CONSOLE_SCREEN_BUFFER_INFO
-        {
-            /// COORD->_COORD
-            public COORD dwSize;
-
-            /// COORD->_COORD
-            public COORD dwCursorPosition;
-
-            /// WORD->unsigned short
-            public ushort wAttributes;
-
-            /// SMALL_RECT->_SMALL_RECT
-            public SMALL_RECT srWindow;
-
-            /// COORD->_COORD
-            public COORD dwMaximumWindowSize;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct CONSOLE_SELECTION_INFO
-        {
-            /// DWORD->unsigned int
-            public uint dwFlags;
-
-            /// COORD->_COORD
-            public COORD dwSelectionAnchor;
-
-            /// SMALL_RECT->_SMALL_RECT
-            public SMALL_RECT srSelection;
-        }
-
-        [StructLayout(LayoutKind.Explicit)]
-        private struct ConsoleEvents
-        {
-            /// KEY_EVENT_RECORD->_KEY_EVENT_RECORD
-            [FieldOffset(0)]
-            public KEY_EVENT_RECORD KeyEvent;
-
-            /// MOUSE_EVENT_RECORD->_MOUSE_EVENT_RECORD
-            [FieldOffset(0)]
-            public MOUSE_EVENT_RECORD MouseEvent;
-
-            /// WINDOW_BUFFER_SIZE_RECORD->_WINDOW_BUFFER_SIZE_RECORD
-            [FieldOffset(0)]
-            public WINDOW_BUFFER_SIZE_RECORD WindowBufferSizeEvent;
-
-            /// MENU_EVENT_RECORD->_MENU_EVENT_RECORD
-            [FieldOffset(0)]
-            public MENU_EVENT_RECORD MenuEvent;
-
-            /// FOCUS_EVENT_RECORD->_FOCUS_EVENT_RECORD
-            [FieldOffset(0)]
-            public FOCUS_EVENT_RECORD FocusEvent;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct COORD
-        {
-            /// SHORT->short
-            public short X;
-
-            /// SHORT->short
-            public short Y;
-        }
-
-        [StructLayout(LayoutKind.Explicit)]
-        private struct EventCharacterUnion
-        {
-            /// WCHAR->wchar_t->unsigned short
-            [FieldOffset(0)]
-            public ushort UnicodeChar;
-
-            /// CHAR->char
-            [FieldOffset(0)]
-            public byte AsciiChar;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct FOCUS_EVENT_RECORD
-        {
-            /// BOOL->int
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool bSetFocus;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct INPUT_RECORD
-        {
-            /// WORD->unsigned short
-            public ushort EventType;
-
-            /// Anonymous_79fe9041_6876_475e_b93a_ffb0d7822836
-            public ConsoleEvents Event;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct KEY_EVENT_RECORD
-        {
-            /// BOOL->int
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool bKeyDown;
-
-            /// WORD->unsigned short
-            public ushort wRepeatCount;
-
-            /// WORD->unsigned short
-            public ushort wVirtualKeyCode;
-
-            /// WORD->unsigned short
-            public ushort wVirtualScanCode;
-
-            /// Anonymous_ee4ad878_dde2_4d9b_b7de_b1588db350c7
-            public EventCharacterUnion uChar;
-
-            /// DWORD->unsigned int
-            public uint dwControlKeyState;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MENU_EVENT_RECORD
-        {
-            /// UINT->unsigned int
-            public uint dwCommandId;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MOUSE_EVENT_RECORD
-        {
-            /// COORD->_COORD
-            public COORD dwMousePosition;
-
-            /// DWORD->unsigned int
-            public uint dwButtonState;
-
-            /// DWORD->unsigned int
-            public uint dwControlKeyState;
-
-            /// DWORD->unsigned int
-            public uint dwEventFlags;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct SECURITY_ATTRIBUTES
-        {
-            /// DWORD->unsigned int
-            public uint nLength;
-
-            /// LPVOID->void*
-            public IntPtr lpSecurityDescriptor;
-
-            /// BOOL->int
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool bInheritHandle;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct SMALL_RECT
-        {
-            /// SHORT->short
-            public short Left;
-
-            /// SHORT->short
-            public short Top;
-
-            /// SHORT->short
-            public short Right;
-
-            /// SHORT->short
-            public short Bottom;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct WINDOW_BUFFER_SIZE_RECORD
-        {
-            /// COORD->_COORD
-            public COORD dwSize;
         }
     }
 }

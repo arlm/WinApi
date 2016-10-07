@@ -16,8 +16,6 @@ namespace Sandbox
     [StructLayout(LayoutKind.Sequential)]
     public struct ANIMATIONINFO
     {
-        #region Public Fields
-
         /// <summary>
         /// Always must be set to (System.UInt32)Marshal.SizeOf(typeof(ANIMATIONINFO)).
         /// </summary>
@@ -27,10 +25,6 @@ namespace Sandbox
         /// If non-zero, minimize/restore animation is enabled, otherwise disabled.
         /// </summary>
         public int iMinAnimate;
-
-        #endregion Public Fields
-
-        #region Public Constructors
 
         /// <summary>
         /// Creates an AMINMATIONINFO structure.
@@ -43,7 +37,5 @@ namespace Sandbox
             this.cbSize = (uint)Marshal.SizeOf(typeof(ANIMATIONINFO));
             this.iMinAnimate = iMinAnimate;
         }
-
-        #endregion Public Constructors
     }
 }

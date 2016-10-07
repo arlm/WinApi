@@ -11,8 +11,6 @@ namespace Sandbox
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
     public struct NONCLIENTMETRICS
     {
-        #region Public Fields
-
         public int cbSize;
         public int iBorderWidth;
         public int iCaptionHeight;
@@ -35,7 +33,5 @@ namespace Sandbox
         public LOGFONT lfMessageFont;
         public LOGFONT lfSMCaptionFont;
         public LOGFONT lfStatusFont;
-
-        #endregion Public Fields
     }
 }

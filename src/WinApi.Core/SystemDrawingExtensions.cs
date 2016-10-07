@@ -8,8 +8,6 @@ namespace WinApi.Core
 {
     public static class SystemDrawingExtensions
     {
-        #region Public Methods
-
         public static Point ToPoint(this POINT point)
         {
             return new Point(point.x, point.y);
@@ -35,11 +33,9 @@ namespace WinApi.Core
             };
         }
 
-        public static Rectangle ToRectangle(this PInvoke.RECT rect)
+        public static Rectangle ToRectangle(this RECT rect)
         {
             return new Rectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
         }
-
-        #endregion Public Methods
     }
 }

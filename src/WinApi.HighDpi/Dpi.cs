@@ -33,26 +33,26 @@ namespace WinApi.HighDpi
             return this.X == other.X && this.Y == other.Y;
         }
 
-        public override bool Equals(object other)
+        public override bool Equals(object obj)
         {
-            if (ReferenceEquals(this, other))
+            if (ReferenceEquals(this, obj))
             {
                 return false;
             }
 
-            if (ReferenceEquals(other, null))
+            if (ReferenceEquals(obj, null))
             {
                 return false;
             }
 
-            return other is Dpi && this.Equals((Dpi)other);
+            return obj is Dpi && this.Equals((Dpi)obj);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return ((int)this.X * 397) ^ (int)this.Y;
+                return this.X * 397 ^ this.Y;
             }
         }
 

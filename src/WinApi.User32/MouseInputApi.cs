@@ -4,6 +4,7 @@
 using System;
 using System.Runtime.InteropServices;
 using WinApi.Core;
+using static PInvoke.User32;
 
 namespace WinApi.User32
 {
@@ -19,12 +20,12 @@ namespace WinApi.User32
             return unchecked((short)CoreExtensions.GetHiWord(wParam));
         }
 
-        public static void SendMouseInput(PInvoke.User32.MOUSEEVENTF flags, int data, int dx = 0, int dy = 0)
+        public static void SendMouseInput(MOUSEEVENTF flags, int data, int dx = 0, int dy = 0)
         {
-            PInvoke.User32.INPUT[] input = new[] { new PInvoke.User32.INPUT() };
+            INPUT[] input = { new INPUT() };
 
-            input[0].type = PInvoke.User32.InputType.INPUT_MOUSE;
-            var mi = new PInvoke.User32.MOUSEINPUT();
+            input[0].type = InputType.INPUT_MOUSE;
+            var mi = new MOUSEINPUT();
             mi.dx = dx;
             mi.dy = dy;
             mi.dwFlags = flags;
@@ -32,7 +33,7 @@ namespace WinApi.User32
             mi.dwExtraInfo_IntPtr = IntPtr.Zero;
             mi.mouseData = unchecked((uint)data);
             input[0].mi = mi;
-            var result = PInvoke.User32.SendInput(input.Length, input, Marshal.SizeOf(input[0].GetType()));
+            var result = SendInput(input.Length, input, Marshal.SizeOf(input[0].GetType()));
         }
     }
 }

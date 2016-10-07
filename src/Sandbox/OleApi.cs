@@ -11,14 +11,8 @@ namespace Sandbox
 {
     public static class OleApi
     {
-        #region Private Fields
-
         private const string OLE_INITIALIZARION_FAILURE = "OLE initialization failed.";
         private const string THREAD_MUST_BE_STA = "Current thread must be set to single thread apartment (STA) mode before OLE calls can be made. Ensure that your Main function has STAThreadAttribute marked on it. This exception is only raised if a debugger is attached to the process.";
-
-        #endregion Private Fields
-
-        #region Public Methods
 
         ///<SecurityNote>
         ///  Critical as this code performs an elevation.
@@ -91,14 +85,12 @@ namespace Sandbox
 
             // Add Dispatcher.Shutdown event handler. We will call ole Uninitialize and clean up the
             // resource when UIContext is terminated.
-            Dispatcher.CurrentDispatcher.ShutdownFinished += new EventHandler(OnDispatcherShutdown);
+            Dispatcher.CurrentDispatcher.ShutdownFinished += OnDispatcherShutdown;
         }
 
         public static bool Succeeded(int hr)
         {
             return hr >= 0;
         }
-
-        #endregion Public Methods
     }
 }

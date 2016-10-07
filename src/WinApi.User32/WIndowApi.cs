@@ -4,6 +4,7 @@
 using System;
 using System.Runtime.InteropServices;
 using PInvoke;
+using static PInvoke.User32;
 
 namespace WinApi.User32
 {
@@ -11,7 +12,23 @@ namespace WinApi.User32
     {
         public static bool GetExtendedFrameBounds(IntPtr handle, out RECT rectangle)
         {
-            var result = DwmApi.DwmGetWindowAttribute(handle, DwmApi.DWMWINDOWATTRIBUTE.ExtendedFrameBounds, out rectangle, Marshal.SizeOf(typeof(RECT)));
+            HResult result;
+            IntPtr rect = IntPtr.Zero;
+
+            try
+            {
+                var size = Marshal.SizeOf(typeof(RECT));
+                rect = Marshal.AllocHGlobal(size);
+                result = DwmApi.DwmGetWindowAttribute(handle, DwmApi.DWMWINDOWATTRIBUTE.DWMWA_EXTENDED_FRAME_BOUNDS, out rect, size);
+                rectangle = Marshal.PtrToStructure<RECT>(rect);
+            }
+            finally
+            {
+                if (rect == IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(rect);
+                }
+            }
 
             return result >= 0;
         }
@@ -41,17 +58,15 @@ namespace WinApi.User32
             {
                 return GetWindowRect(handle);
             }
-            else
-            {
-                RECT rectangle;
-                return GetExtendedFrameBounds(handle, out rectangle) ? rectangle : GetWindowRect(handle);
-            }
+
+            RECT rectangle;
+            return GetExtendedFrameBounds(handle, out rectangle) ? rectangle : GetWindowRect(handle);
         }
 
         public static string GetWindowTextRaw(IntPtr hwnd)
         {
             // Allocate correct string length first
-            var length = PInvoke.User32.SendMessage(hwnd, PInvoke.User32.WindowMessage.WM_GETTEXTLENGTH, IntPtr.Zero, IntPtr.Zero).ToInt32();
+            var length = SendMessage(hwnd, PInvoke.User32.WindowMessage.WM_GETTEXTLENGTH, IntPtr.Zero, IntPtr.Zero).ToInt32();
 
             return WindowMessage.Send.WM_GETTEXT(hwnd, length);
         }
@@ -60,20 +75,20 @@ namespace WinApi.User32
         public static void ShowInactiveTopmost(IntPtr hwnd)
         {
             var rect = GetWindowRectangle(hwnd);
-            PInvoke.User32.ShowWindow(hwnd, PInvoke.User32.WindowShowStyle.SW_SHOWNOACTIVATE);
-            PInvoke.User32.SetWindowPos(
+            ShowWindow(hwnd, WindowShowStyle.SW_SHOWNOACTIVATE);
+            SetWindowPos(
                 hwnd,
-                new IntPtr((int)PInvoke.User32.SpecialWindowHandles.HWND_TOPMOST),
+                new IntPtr((int)SpecialWindowHandles.HWND_TOPMOST),
                 rect.left,
                 rect.top,
                 rect.bottom - rect.top,
                 rect.right - rect.left,
-                PInvoke.User32.SetWindowPosFlags.SWP_NOACTIVATE);
+                SetWindowPosFlags.SWP_NOACTIVATE);
         }
 
         public static IntPtr WindowFromPhysicalPoint(int physicalX, int physicalY)
         {
-            var ps = new PInvoke.POINT
+            var ps = new POINT
             {
                 x = physicalX,
                 y = physicalY
@@ -83,10 +98,8 @@ namespace WinApi.User32
             {
                 return PInvoke.User32.WindowFromPhysicalPoint(ps);
             }
-            else
-            {
-                return PInvoke.User32.WindowFromPoint(ps);
-            }
+
+            return WindowFromPoint(ps);
         }
     }
 }

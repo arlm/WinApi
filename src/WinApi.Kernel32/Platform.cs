@@ -4,6 +4,8 @@
 using System;
 using System.Diagnostics;
 
+using static PInvoke.Kernel32;
+
 namespace WinApi.Kernel32
 {
     public static class Platform
@@ -31,7 +33,7 @@ namespace WinApi.Kernel32
             }
         }
 
-        public static bool Is64Bit(PInvoke.Kernel32.SafeObjectHandle hProcess = null)
+        public static bool Is64Bit(SafeObjectHandle hProcess = null)
         {
             bool isWow64 = false;
 
@@ -40,24 +42,24 @@ namespace WinApi.Kernel32
                 if ((Environment.OSVersion.Version.Major == 5 && Environment.OSVersion.Version.Minor >= 1) ||
                       Environment.OSVersion.Version.Major > 5)
                 {
-                    using (var moduleHandle = PInvoke.Kernel32.GetModuleHandle("Kernel32.dll"))
+                    using (var moduleHandle = GetModuleHandle("Kernel32.dll"))
                     {
                         if (!moduleHandle.IsInvalid)
                         {
-                            var proc = PInvoke.Kernel32.GetProcAddress(moduleHandle, "IsWow64Process");
+                            var proc = GetProcAddress(moduleHandle, "IsWow64Process");
 
                             if (proc != IntPtr.Zero)
                             {
                                 IntPtr process = IntPtr.Zero;
 
-                                if (hProcess == null || hProcess.IsInvalid || hProcess.IsClosed || hProcess == PInvoke.Kernel32.SafeObjectHandle.Null)
+                                if (hProcess == null || hProcess.IsInvalid || hProcess.IsClosed || hProcess == SafeObjectHandle.Null)
                                 {
                                     process = Process.GetCurrentProcess().Handle;
                                 }
 
-                                var processHandle = process == IntPtr.Zero ? new PInvoke.Kernel32.SafeObjectHandle(process, true) : hProcess;
+                                var processHandle = process == IntPtr.Zero ? new SafeObjectHandle(process, true) : hProcess;
 
-                                isWow64 = PInvoke.Kernel32.IsWow64Process(processHandle);
+                                isWow64 = IsWow64Process(processHandle);
 
                                 if (process == IntPtr.Zero)
                                 {
@@ -68,7 +70,9 @@ namespace WinApi.Kernel32
                     }
                 }
             }
-            catch (Exception)
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+            catch
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
             {
             }
 

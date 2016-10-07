@@ -5,73 +5,80 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using PInvoke;
+using static PInvoke.User32;
 
 namespace Sandbox
 {
     //This is a sample HelloWin ported from Petzolds book (chapter 3) to illustrate the IntPtr issue for classname on CreateWindow
     public class Program
     {
-        #region Private Methods
+        private const string APP_NAME = "HelloWin";
 
-        private static void Main(string[] args)
+        private static unsafe IntPtr WndProc(IntPtr hWnd, WindowMessage msg, void* wParam, void* lParam)
         {
-            IntPtr hInstance = Process.GetCurrentProcess().Handle;
-            string szAppName = "HelloWin";
+            PAINTSTRUCT ps;
+            RECT rect;
 
-            PInvoke.User32.WNDCLASS wndclass;
-
-            wndclass.style = PInvoke.User32.ClassStyles.HorizontalRedraw | PInvoke.User32.ClassStyles.VerticalRedraw;
-            wndclass.lpfnWndProc = (hWnd, message, wParam, lParam) =>
+            switch (msg)
             {
-                IntPtr hdc;
-                PInvoke.User32.PAINTSTRUCT ps;
-                RECT rect;
+                case WindowMessage.WM_PAINT:
+                    using (var hdc = BeginPaint(hWnd, out ps))
+                    {
+                        GetClientRect(hWnd, out rect);
 
-                switch (message)
-                {
-                    case PInvoke.User32.WindowMessage.WM_PAINT:
-                        hdc = PInvoke.User32.BeginPaint(hWnd, out ps);
-                        PInvoke.User32.GetClientRect(hWnd, out rect);
+                        DrawText(hdc, "Hello, Windows 98!".ToCharArray(), -1, ref rect, TextFormats.DT_SINGLELINE | TextFormats.DT_CENTER | TextFormats.DT_VCENTER);
 
-                        PInvoke.User32.DrawText(hdc, "Hello, Windows 98!".ToCharArray(), -1, ref rect, PInvoke.User32.TextFormats.DT_SINGLELINE | PInvoke.User32.TextFormats.DT_CENTER | PInvoke.User32.TextFormats.DT_VCENTER);
+                        EndPaint(hWnd, ps);
+                    }
+                    return IntPtr.Zero;
 
-                        PInvoke.User32.EndPaint(hWnd, ref ps);
-                        return IntPtr.Zero;
+                case WindowMessage.WM_DESTROY:
+                    PostQuitMessage(0);
+                    return IntPtr.Zero;
+            }
 
-                    case PInvoke.User32.WindowMessage.WM_DESTROY:
-                        PInvoke.User32.PostQuitMessage(0);
-                        return IntPtr.Zero;
-                }
+            return DefWindowProc(hWnd, msg, (IntPtr)wParam, (IntPtr)lParam);
+        }
 
-                return PInvoke.User32.DefWindowProc(hWnd, message, wParam, lParam);
-            };
+#pragma warning disable RECS0154 // Parameter is never used
+        private static unsafe void Main(string[] args)
+#pragma warning restore RECS0154 // Parameter is never used
+        {
+            var hInstance = Process.GetCurrentProcess().Handle;
 
-            wndclass.cbClsExtra = 0;
-            wndclass.cbWndExtra = 0;
-            wndclass.hInstance = hInstance;
-            wndclass.hIcon = PInvoke.User32.LoadIcon(IntPtr.Zero, new IntPtr((int)SystemIcons.IDI_APPLICATION));
-            wndclass.hCursor = PInvoke.User32.LoadCursor(IntPtr.Zero, new IntPtr((int)IDC_STANDARD_CURSORS.IDC_ARROW));
-            wndclass.hbrBackground = Gdi32.GetStockObject(PInvoke.Gdi32.StockObjects.WHITE_BRUSH);
-            wndclass.lpszMenuName = null;
-            wndclass.lpszClassName = szAppName;
+            ushort regResult;
+            fixed (char* className = APP_NAME)
+            {
+                WNDCLASS wndclass;
+                wndclass.style = ClassStyles.CS_HREDRAW | ClassStyles.CS_VREDRAW;
+                wndclass.lpfnWndProc = WndProc;
+                wndclass.cbClsExtra = 0;
+                wndclass.cbWndExtra = 0;
+                wndclass.hInstance = hInstance;
+                wndclass.hIcon = LoadIcon(IntPtr.Zero, new IntPtr((int)SystemIcons.IDI_APPLICATION));
+                wndclass.hCursor = LoadCursor(IntPtr.Zero, new IntPtr((int)IDC_STANDARD_CURSORS.IDC_ARROW));
+                wndclass.hbrBackground = Gdi32.GetStockObject(Gdi32.StockObject.WHITE_BRUSH);
+                wndclass.lpszMenuName = null;
+                wndclass.lpszClassName = className;
 
-            ushort regResult = PInvoke.User32.RegisterClass(ref wndclass);
+                regResult = RegisterClass(ref wndclass);
+            }
 
             if (regResult == 0)
             {
-                PInvoke.User32.MessageBox(IntPtr.Zero, "This program requires Windows NT!", szAppName, PInvoke.User32.MessageBoxOptions.IconError);
+                MessageBox(IntPtr.Zero, "This program requires Windows NT!", APP_NAME, MessageBoxOptions.MB_ICONERROR);
                 return;
             }
 
-            IntPtr hwnd = PInvoke.User32.CreateWindowEx(
-                PInvoke.User32.WindowStylesEx.WS_EX_OVERLAPPEDWINDOW,
-                szAppName, // window class name
+            var hwnd = CreateWindowEx(
+                WindowStylesEx.WS_EX_OVERLAPPEDWINDOW,
+                APP_NAME, // window class name
                 "The Hello Program", // window caption
-                PInvoke.User32.WindowStyles.WS_OVERLAPPEDWINDOW, // window style
-                PInvoke.User32.CW_USEDEFAULT, // initial x position
-                PInvoke.User32.CW_USEDEFAULT, // initial y position
-                PInvoke.User32.CW_USEDEFAULT, // initial x size
-                PInvoke.User32.CW_USEDEFAULT, // initial y size
+                WindowStyles.WS_OVERLAPPEDWINDOW, // window style
+                CW_USEDEFAULT, // initial x position
+                CW_USEDEFAULT, // initial y position
+                CW_USEDEFAULT, // initial x size
+                CW_USEDEFAULT, // initial y size
                 IntPtr.Zero, // parent window handle
                 IntPtr.Zero, // window menu handle
                 hInstance, // program instance handle
@@ -79,23 +86,35 @@ namespace Sandbox
 
             if (hwnd == IntPtr.Zero)
             {
-                int lastError = Marshal.GetLastWin32Error();
-                string errorMessage = new System.ComponentModel.Win32Exception(lastError).Message;
+                var lastError = Kernel32.GetLastError();
+                var errorMessage = lastError.GetMessage();
             }
 
-            PInvoke.User32.ShowWindow(hwnd, PInvoke.User32.WindowShowStyle.SW_SHOWNORMAL);
-            PInvoke.User32.UpdateWindow(hwnd);
+            ShowWindow(hwnd, WindowShowStyle.SW_SHOWNORMAL);
+            UpdateWindow(hwnd);
 
-            PInvoke.User32.MSG msg;
-            while (PInvoke.User32.GetMessage(out msg, IntPtr.Zero, 0, 0) != 0)
+            
+            IntPtr message = IntPtr.Zero;
+            try
             {
-                PInvoke.User32.TranslateMessage(ref msg);
-                PInvoke.User32.DispatchMessage(ref msg);
+                var size = Marshal.SizeOf(typeof(RECT));
+                message = Marshal.AllocHGlobal(size);
+
+                while (GetMessage(message, IntPtr.Zero, 0, 0) != 0)
+                {
+                    TranslateMessage(message);
+                    DispatchMessage(message);
+                }
+            }
+            finally
+            {
+                if (message == IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(message);
+                }
             }
 
             return;
         }
-
-        #endregion Private Methods
     }
 }

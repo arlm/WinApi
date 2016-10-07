@@ -102,12 +102,12 @@ namespace WinApi.PeCoff
                 {
                     return false;
                 }
-                else
-                {
-                    return pe.PEFormat == PEType.PE32 && !pe.Characteristics.HasFlag(CharacteristicsFlags.IMAGE_FILE_32BIT_MACHINE);
-                }
+
+                return pe.PEFormat == PEType.PE32 && !pe.Characteristics.HasFlag(CharacteristicsFlags.IMAGE_FILE_32BIT_MACHINE);
             }
-            catch (Exception)
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+            catch
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
             {
             }
 
@@ -126,12 +126,11 @@ namespace WinApi.PeCoff
                 {
                     return false;
                 }
-                else
-                {
-                    return pe.PEFormat == PEType.PE32Plus && !pe.Characteristics.HasFlag(CharacteristicsFlags.IMAGE_FILE_32BIT_MACHINE);
-                }
+                return pe.PEFormat == PEType.PE32Plus && !pe.Characteristics.HasFlag(CharacteristicsFlags.IMAGE_FILE_32BIT_MACHINE);
             }
-            catch (Exception)
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+            catch
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
             {
             }
 
@@ -150,12 +149,11 @@ namespace WinApi.PeCoff
                 {
                     return false;
                 }
-                else
-                {
-                    return pe.PEFormat == PEType.PE32 && !pe.Characteristics.HasFlag(CharacteristicsFlags.IMAGE_FILE_32BIT_MACHINE);
-                }
+                return pe.PEFormat == PEType.PE32 && !pe.Characteristics.HasFlag(CharacteristicsFlags.IMAGE_FILE_32BIT_MACHINE);
             }
-            catch (Exception)
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+            catch
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
             {
             }
 
@@ -172,7 +170,9 @@ namespace WinApi.PeCoff
                 // The 15th directory consist of CLR header! if its 0, its not a CLR file :)
                 return pe.DataDictionaryRVA[14] != 0;
             }
-            catch (Exception)
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+            catch
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
             {
             }
 
@@ -198,7 +198,9 @@ namespace WinApi.PeCoff
                         return null;
                 }
             }
-            catch (Exception)
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+            catch
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
             {
             }
 

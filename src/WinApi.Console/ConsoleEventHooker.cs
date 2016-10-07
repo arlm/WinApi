@@ -2,82 +2,53 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 
 using System;
+using PInvoke;
 
 namespace WinApi.Console
 {
-    // An enumerated type for the control messages sent to the handler routine.
-    public enum CtrlTypes
+    public sealed class ConsoleEventHooker : IDisposable
     {
-        CTRL_C_EVENT = 0,
-        CTRL_BREAK_EVENT,
-        CTRL_CLOSE_EVENT,
-        CTRL_LOGOFF_EVENT = 5,
-        CTRL_SHUTDOWN_EVENT
-    }
+        private static Kernel32.HandlerRoutine callback;
+        private static ConsoleEventHooker instance;
 
-    public static class ConsoleEventHooker
-    {
-        private static EventHandler _closed;
-        private static ConsoleEventDelegate _d;
-        private static bool _initedHooker;
-        private static EventHandler _shutdown;
+        public EventHandler Closed;
 
-        // A delegate type to be used as the handler routine for SetConsoleCtrlHandler.
-        private delegate bool ConsoleEventDelegate(CtrlTypes ctrlType);
+        public EventHandler Shutdown;
 
-        public static event EventHandler Closed
+        public ConsoleEventHooker()
         {
-            add
+            if (instance != null)
             {
-                Init();
+                throw new InvalidOperationException("ConsoleEventHooker already setup for this AppDomain");
+            }
 
-                _closed += value;
-            }
-            remove
-            {
-                _closed -= value;
-            }
+            instance = this;
+            callback = ConsoleEventCallback;
+            Kernel32.SetConsoleCtrlHandler(callback, true);
         }
 
-        public static event EventHandler Shutdown
+        private bool ConsoleEventCallback(Kernel32.ControlType dwCtrlType)
         {
-            add
+            if (dwCtrlType == Kernel32.ControlType.CTRL_CLOSE_EVENT)
             {
-                Init();
-
-                _shutdown += value;
-            }
-            remove
-            {
-                _shutdown -= value;
-            }
-        }
-
-        private static bool ConsoleEventCallback(CtrlTypes eventType)
-        {
-            if (eventType == CtrlTypes.CTRL_CLOSE_EVENT)
-            {
-                _closed?.Invoke(null, new EventArgs());
+                Closed?.Invoke(null, new EventArgs());
             }
 
-            if (eventType == CtrlTypes.CTRL_SHUTDOWN_EVENT)
+            if (dwCtrlType == Kernel32.ControlType.CTRL_SHUTDOWN_EVENT)
             {
-                _shutdown?.Invoke(null, new EventArgs());
+                Shutdown?.Invoke(null, new EventArgs());
             }
 
             return false;
         }
 
-        private static void Init()
+        public void Dispose()
         {
-            if (_initedHooker)
+            if (ReferenceEquals(instance, this))
             {
-                return;
+                Kernel32.SetConsoleCtrlHandler(callback, false);
+                instance = null;
             }
-
-            _initedHooker = true;
-            _d = ConsoleEventCallback;
-            //PInvoke.Kernel32.SetConsoleCtrlHandler(_d, true);
-        }        
+        }
     }
 }
