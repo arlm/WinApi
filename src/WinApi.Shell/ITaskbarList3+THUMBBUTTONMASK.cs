@@ -6,7 +6,7 @@ using System;
 namespace WinApi.Shell
 {
     [Flags]
-    public enum THUMBBUTTONMASK
+    internal enum THUMBBUTTONMASK
     {
         THB_BITMAP = 0x1,
         THB_ICON = 0x2,

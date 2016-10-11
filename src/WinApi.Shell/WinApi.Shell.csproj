@@ -54,9 +54,9 @@
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CHANGEFILTERSTRUCT.cs" />
     <Compile Include="ITaskbarList.cs" />
     <Compile Include="ITaskbarList2.cs" />
     <Compile Include="ITaskbarList3+TBPFLAG.cs" />
@@ -66,8 +66,12 @@
     <Compile Include="ITaskbarList3.cs" />
     <Compile Include="ITaskbarList4.cs" />
     <Compile Include="ITaskbarList4+STPFLAG.cs" />
+    <Compile Include="MSGFILTINFO.cs" />
+    <Compile Include="MSGFLT.cs" />
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Taskbar.cs" />
+    <Compile Include="TaskbarIconOverlay.cs" />
     <Compile Include="TaskbarStates.cs" />
     <Compile Include="ThumbnailButton.cs" />
   </ItemGroup>

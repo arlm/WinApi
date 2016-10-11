@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 namespace WinApi.Shell
 {
     [StructLayout(LayoutKind.Sequential, Pack = 8, CharSet = CharSet.Unicode)]
-    public struct THUMBBUTTON
+    internal struct THUMBBUTTON
     {
         /// <summary>
         /// WPARAM value for a THUMBBUTTON being clicked.

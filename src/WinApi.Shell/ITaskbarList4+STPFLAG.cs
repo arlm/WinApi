@@ -6,7 +6,7 @@ using System;
 namespace WinApi.Shell
 {
     [Flags]
-    public enum STPFLAG
+    internal enum STPFLAG
     {
         STPF_NONE = 0x0,
         STPF_USEAPPTHUMBNAILALWAYS = 0x1,

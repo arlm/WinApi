@@ -2,26 +2,21 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using PInvoke;
+using System.Drawing.Imaging;
 
 namespace WinApi.Shell
 {
-    public class ThumbnailButton : IDisposable
+    public class TaskbarIconOverlay : IDisposable
     {
         private bool isInitialized;
-        private static readonly IList<uint> idList = new List<uint>();
-        private THUMBBUTTONMASK type;
         private THUMBBUTTONFLAGS state;
         private Icon icon;
         private Taskbar taskbar;
 
-        public uint ID { get; set; }
-        public string ToolTip { get; set; }
+        public string Description { get; set; }
         public IntPtr Parent { get; private set; }
 
-        public event EventHandler Click;
         public event EventHandler Updated;
 
         public bool IsEnabled
@@ -91,25 +86,6 @@ namespace WinApi.Shell
             }
         }
 
-        public bool IsDismissOnClick
-        {
-            get
-            {
-                return (state & THUMBBUTTONFLAGS.THBF_DISMISSONCLICK) != 0;
-            }
-
-            set
-            {
-                if (value == IsDismissOnClick)
-                {
-                    return;
-                }
-
-                state = value ? state | THUMBBUTTONFLAGS.THBF_DISMISSONCLICK : state ^ THUMBBUTTONFLAGS.THBF_DISMISSONCLICK;
-                OnUpdate();
-            }
-        }
-
         public Icon Icon
         {
             get
@@ -124,53 +100,70 @@ namespace WinApi.Shell
             }
         }
 
-        public ThumbnailButton(IntPtr parent, string tooltip, Icon icon)
+        public TaskbarIconOverlay(IntPtr parent, Icon icon, string description)
         {
-            this.ID = CreateID();
-            this.ToolTip = tooltip;
+            this.Description = description;
             this.state = THUMBBUTTONFLAGS.THBF_ENABLED;
-
             this.icon = icon;
-            this.type = THUMBBUTTONMASK.THB_ICON | THUMBBUTTONMASK.THB_TOOLTIP | THUMBBUTTONMASK.THB_FLAGS;
-
             this.Parent = parent;
+        }
+
+        public TaskbarIconOverlay(IntPtr parent, Bitmap bitmap, string description)
+        {
+            this.Description = description;
+            this.state = THUMBBUTTONFLAGS.THBF_ENABLED;
+            this.icon = Icon.FromHandle(bitmap.GetHicon());
+            this.Parent = parent;
+        }
+
+        public TaskbarIconOverlay(IntPtr parent, string message)
+        {
+            this.Description = message;
+            this.state = THUMBBUTTONFLAGS.THBF_ENABLED;
+            this.icon = BuildIcon(message);
+            this.Parent = parent;
+        }
+
+        private static Icon BuildIcon(string text)
+        {
+            Bitmap image = null;
+            IntPtr icon = IntPtr.Zero;
+
+            try
+            {
+                // The source Bitmap must use PixelFormat.Format24BppRgb or PixelFormat.Format32bppArgb 
+                // The source Bitmap must use at most 256 colors when using Format24BppRgb
+                // The source Bitmap must be 16x16 pixels
+                // The target Icon must be 16x16 pixels
+                // The pixel in the lower left corner (0, 15) is used to determine the transparency color
+                image = new Bitmap(16, 16, PixelFormat.Format24bppRgb);
+
+                using (var graphics = Graphics.FromImage(image))
+                {
+                    graphics.DrawString(text, new Font("Arial", 54), Brushes.White, 10, 25);
+                }
+
+                icon = image.GetHicon();
+            }
+            finally
+            {
+                image?.Dispose();
+            }
+
+            if (icon == IntPtr.Zero)
+            {
+                return null;
+            }
+
+            return Icon.FromHandle(icon);
         }
 
         public void Initialize(Taskbar taskbar)
         {
             this.taskbar = taskbar;
 
-            taskbar.AddThumbnailButtons(this.Parent, this);
-            taskbar.UpdateThumbnailButtons(this.Parent, this);
+            taskbar.SetOverlayIcon(this.Parent, icon, Description);
             this.isInitialized = true;
-        }
-
-        internal THUMBBUTTON ToTHUMBBUTTON()
-        {
-            var btn = new THUMBBUTTON
-            {
-                dwFlags = state,
-                dwMask = type,
-                hIcon = icon.Handle,
-                iBitmap = 0,
-                iId = ID,
-                szTip = ToolTip
-            };
-
-            return btn;
-        }
-
-        public void WndProcCall(ref User32.MSG msg)
-        {
-            switch (msg.message)
-            {
-                case User32.WindowMessage.WM_COMMAND:
-                    if ((uint)(msg.wParam.ToInt32() & 0xFFFF) == this.ID)
-                    {
-                        Click?.Invoke(this, new EventArgs());
-                    }
-                    break;
-            }
         }
 
         protected virtual void OnUpdate()
@@ -182,7 +175,14 @@ namespace WinApi.Shell
 
             Updated?.Invoke(this, new EventArgs());
 
-            taskbar.UpdateThumbnailButtons(this.Parent, this);
+            if (IsEnabled && IsVisible)
+            {
+                taskbar.SetOverlayIcon(this.Parent, icon, Description);
+            }
+            else
+            {
+                taskbar.SetOverlayIcon(this.Parent, (Icon)null, null);
+            }
         }
 
         public void Dispose()
@@ -191,28 +191,8 @@ namespace WinApi.Shell
 
             if (isInitialized)
             {
-                taskbar.UpdateThumbnailButtons(this.Parent);
+                taskbar.SetOverlayIcon(this.Parent, (Icon)null, null);
             }
-
-            DeleteID(ID);
-        }
-
-        private static uint CreateID()
-        {
-            var rand = new Random();
-            var id = (uint)rand.Next();
-
-            while (idList.Contains(id))
-            {
-                id = (uint)rand.Next();
-            }
-
-            return id;
-        }
-
-        private static void DeleteID(uint id)
-        {
-            idList.Remove(id);
         }
     }
 }

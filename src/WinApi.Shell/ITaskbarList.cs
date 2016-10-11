@@ -11,7 +11,7 @@ namespace WinApi.Shell
     [ComImport]
     [Guid("56FDF342-FD6D-11d0-958A-006097C9A090")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    interface ITaskbarList
+    internal interface ITaskbarList
     {
         /// <summary>
         /// Initializes the taskbar list object. This method must be called before any other ITaskbarList methods can be called.

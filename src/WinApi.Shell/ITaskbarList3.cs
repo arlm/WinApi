@@ -9,7 +9,7 @@ namespace WinApi.Shell
 {
     [ComVisible(true)]
     [ComImport]
-    [Guid("EA1AFB91-9E28-4B86-90E9-9E9F8A5EEFAF")]
+    [Guid("C43DC798-95D1-4BEA-9030-BB99E2983A1A")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     internal interface ITaskbarList3 : ITaskbarList2, ITaskbarList
     {

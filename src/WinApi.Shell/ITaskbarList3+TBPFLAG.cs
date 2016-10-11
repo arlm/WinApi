@@ -3,7 +3,7 @@
 
 namespace WinApi.Shell
 {
-    public enum TBPFLAG
+    internal enum TBPFLAG
     {
         TBPF_NOPROGRESS = 0,
         TBPF_INDETERMINATE = 0x1,
