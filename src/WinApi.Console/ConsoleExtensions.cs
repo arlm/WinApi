@@ -310,6 +310,33 @@ namespace WinApi.Console
             }
         }
 
+        private static bool Attach()
+        {
+            const int ParentProcess = unchecked((int)0xFFFFFFFF);
+            if (!Kernel32.AttachConsole(ParentProcess))
+            {
+                return false;
+            }
+
+            System.Console.Clear();
+            return true;
+        }
+
+        public static bool AttachOrAlloc()
+        {
+            if (!Attach())
+            {
+                return Kernel32.AllocConsole();
+            }
+
+            return false;
+        }
+
+        public static bool Free()
+        {
+            return Kernel32.FreeConsole();
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Global exception handlers should not throw exceptions")]
         [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]

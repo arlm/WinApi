@@ -57,6 +57,9 @@
     <None Include="..\WinApi.licenseheader">
       <Link>WinApi.licenseheader</Link>
     </None>
+    <None Include="..\WinApi.snk">
+      <Link>WinApi.snk</Link>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
