@@ -60,9 +60,11 @@
   <ItemGroup>
     <Compile Include="ConsoleEventHooker.cs" />
     <Compile Include="ConsoleExtensions.cs" />
+    <Compile Include="EnhancedConsole.cs" />
     <Compile Include="ConsoleLogger.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="InternalHelpers.cs" />
+    <Compile Include="NativeAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnhandledExceptionEventArgs.cs" />
   </ItemGroup>
