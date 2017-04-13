@@ -5,11 +5,8 @@ using System;
 
 namespace WinApi.PeCoff
 {
-    public struct IMAGE_DATA_DIRECTORY : IEquatable<IMAGE_DATA_DIRECTORY>
+    public struct IMAGE_OPTIONAL_HEADER64 : IEquatable<IMAGE_OPTIONAL_HEADER64>
     {
-        public uint Size;
-        public uint VirtualAddress;
-
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(obj, null))
@@ -17,7 +14,7 @@ namespace WinApi.PeCoff
                 return false;
             }
 
-            var x = obj as IMAGE_DATA_DIRECTORY?;
+            var x = obj as IMAGE_OPTIONAL_HEADER64?;
 
             if (!x.HasValue)
             {
@@ -27,19 +24,14 @@ namespace WinApi.PeCoff
             return Equals(x);
         }
 
-        public bool Equals(IMAGE_DATA_DIRECTORY other)
+        public bool Equals(IMAGE_OPTIONAL_HEADER64 other)
         {
-            if (ReferenceEquals(other, null))
+            if (ReferenceEquals(other, this))
             {
                 return false;
             }
 
-            if (Size != other.Size)
-            {
-                return false;
-            }           
-
-            return VirtualAddress == other.VirtualAddress;
+            return true;
         }
 
         public override int GetHashCode()
@@ -51,19 +43,19 @@ namespace WinApi.PeCoff
 
             unchecked
             {
-                hash = (hash * mersenePrime) + this.Size.GetHashCode();
-                hash = (hash * mersenePrime) + this.VirtualAddress.GetHashCode();
+
+                hash = (hash * mersenePrime);
             }
 
             return hash;
         }
 
-        public static bool operator ==(IMAGE_DATA_DIRECTORY x, IMAGE_DATA_DIRECTORY y)
+        public static bool operator ==(IMAGE_OPTIONAL_HEADER64 x, IMAGE_OPTIONAL_HEADER64 y)
         {
             return x.Equals(y);
         }
 
-        public static bool operator !=(IMAGE_DATA_DIRECTORY x, IMAGE_DATA_DIRECTORY y)
+        public static bool operator !=(IMAGE_OPTIONAL_HEADER64 x, IMAGE_OPTIONAL_HEADER64 y)
         {
             return !x.Equals(y);
         }

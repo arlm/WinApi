@@ -5,10 +5,10 @@ using System;
 
 namespace WinApi.PeCoff
 {
-    public struct IMAGE_DATA_DIRECTORY : IEquatable<IMAGE_DATA_DIRECTORY>
+    public struct IMAGE_RESOURCE_DIRECTORY_ENTRY : IEquatable<IMAGE_RESOURCE_DIRECTORY_ENTRY>
     {
-        public uint Size;
-        public uint VirtualAddress;
+        public uint Name;
+        public uint OffsetToData;
 
         public override bool Equals(object obj)
         {
@@ -17,7 +17,7 @@ namespace WinApi.PeCoff
                 return false;
             }
 
-            var x = obj as IMAGE_DATA_DIRECTORY?;
+            var x = obj as IMAGE_RESOURCE_DIRECTORY_ENTRY?;
 
             if (!x.HasValue)
             {
@@ -27,19 +27,19 @@ namespace WinApi.PeCoff
             return Equals(x);
         }
 
-        public bool Equals(IMAGE_DATA_DIRECTORY other)
+        public bool Equals(IMAGE_RESOURCE_DIRECTORY_ENTRY other)
         {
             if (ReferenceEquals(other, null))
             {
                 return false;
             }
 
-            if (Size != other.Size)
+            if (Name != other.Name)
             {
                 return false;
-            }           
+            }
 
-            return VirtualAddress == other.VirtualAddress;
+            return OffsetToData == other.OffsetToData;
         }
 
         public override int GetHashCode()
@@ -51,19 +51,19 @@ namespace WinApi.PeCoff
 
             unchecked
             {
-                hash = (hash * mersenePrime) + this.Size.GetHashCode();
-                hash = (hash * mersenePrime) + this.VirtualAddress.GetHashCode();
+                hash = (hash * mersenePrime) + this.Name.GetHashCode();
+                hash = (hash * mersenePrime) + this.OffsetToData.GetHashCode();
             }
 
             return hash;
         }
 
-        public static bool operator ==(IMAGE_DATA_DIRECTORY x, IMAGE_DATA_DIRECTORY y)
+        public static bool operator ==(IMAGE_RESOURCE_DIRECTORY_ENTRY x, IMAGE_RESOURCE_DIRECTORY_ENTRY y)
         {
             return x.Equals(y);
         }
 
-        public static bool operator !=(IMAGE_DATA_DIRECTORY x, IMAGE_DATA_DIRECTORY y)
+        public static bool operator !=(IMAGE_RESOURCE_DIRECTORY_ENTRY x, IMAGE_RESOURCE_DIRECTORY_ENTRY y)
         {
             return !x.Equals(y);
         }

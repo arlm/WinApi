@@ -5,10 +5,12 @@ using System;
 
 namespace WinApi.PeCoff
 {
-    public struct IMAGE_DATA_DIRECTORY : IEquatable<IMAGE_DATA_DIRECTORY>
+    public struct IMAGE_RESOURCE_DATA_ENTRY : IEquatable<IMAGE_RESOURCE_DATA_ENTRY>
     {
+        public uint CodePage;
+        public uint OffsetToData;
+        public uint Reserved;
         public uint Size;
-        public uint VirtualAddress;
 
         public override bool Equals(object obj)
         {
@@ -17,7 +19,7 @@ namespace WinApi.PeCoff
                 return false;
             }
 
-            var x = obj as IMAGE_DATA_DIRECTORY?;
+            var x = obj as IMAGE_RESOURCE_DATA_ENTRY?;
 
             if (!x.HasValue)
             {
@@ -27,19 +29,29 @@ namespace WinApi.PeCoff
             return Equals(x);
         }
 
-        public bool Equals(IMAGE_DATA_DIRECTORY other)
+        public bool Equals(IMAGE_RESOURCE_DATA_ENTRY other)
         {
             if (ReferenceEquals(other, null))
             {
                 return false;
             }
 
-            if (Size != other.Size)
+            if (CodePage != other.CodePage)
             {
                 return false;
-            }           
+            }
 
-            return VirtualAddress == other.VirtualAddress;
+            if (OffsetToData != other.OffsetToData)
+            {
+                return false;
+            }
+
+            if (Reserved != other.Reserved)
+            {
+                return false;
+            }
+
+            return Size == other.Size;
         }
 
         public override int GetHashCode()
@@ -50,20 +62,22 @@ namespace WinApi.PeCoff
             int hash = 8191;
 
             unchecked
-            {
-                hash = (hash * mersenePrime) + this.Size.GetHashCode();
-                hash = (hash * mersenePrime) + this.VirtualAddress.GetHashCode();
-            }
+        {
+            hash = (hash * mersenePrime) + this.CodePage.GetHashCode();
+            hash = (hash * mersenePrime) + this.OffsetToData.GetHashCode();
+            hash = (hash * mersenePrime) + this.Reserved.GetHashCode();
+            hash = (hash * mersenePrime) + this.Size.GetHashCode();
+        }
 
             return hash;
         }
 
-        public static bool operator ==(IMAGE_DATA_DIRECTORY x, IMAGE_DATA_DIRECTORY y)
+        public static bool operator ==(IMAGE_RESOURCE_DATA_ENTRY x, IMAGE_RESOURCE_DATA_ENTRY y)
         {
             return x.Equals(y);
         }
 
-        public static bool operator !=(IMAGE_DATA_DIRECTORY x, IMAGE_DATA_DIRECTORY y)
+        public static bool operator !=(IMAGE_RESOURCE_DATA_ENTRY x, IMAGE_RESOURCE_DATA_ENTRY y)
         {
             return !x.Equals(y);
         }

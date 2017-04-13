@@ -46,10 +46,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CharacteristicsFlags.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IMAGE_COR20_HEADER.cs" />
     <Compile Include="IMAGE_DATA_DIRECTORY.cs" />
+    <Compile Include="IMAGE_DOS_HEADER.cs" />
+    <Compile Include="IMAGE_OPTIONAL_HEADER.cs" />
+    <Compile Include="IMAGE_OPTIONAL_HEADER64.cs" />
+    <Compile Include="IMAGE_RESOURCE_DATA_ENTRY.cs" />
+    <Compile Include="IMAGE_RESOURCE_DIRECTORY.cs" />
+    <Compile Include="IMAGE_RESOURCE_DIRECTORY_ENTRY.cs" />
+    <Compile Include="IMAGE_SECTION_HEADER.cs" />
     <Compile Include="MachineType.cs" />
-    <Compile Include="PECOFF.cs" />
+    <Compile Include="IMAGE_FILE_HEADER.cs" />
     <Compile Include="PeCoffFiles.cs" />
     <Compile Include="PEType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

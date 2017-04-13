@@ -9,7 +9,7 @@ namespace WinApi.PeCoff
     public enum Characteristics : ushort
     {
         /// <summary>
-        /// Image only, Windows CE, and Microsoft Windows NT® and later. This indicates that the
+        /// Image only, Windows CE, and Microsoft Windows NT and later. This indicates that the
         /// file does not contain base relocations and must therefore be loaded at its preferred
         /// base address. If the base address is not available, the loader reports an error.
         /// </summary>
